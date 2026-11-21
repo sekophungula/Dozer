@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sleepable for Mac</title>
+<meta name="description" content="Sleepable keeps your Mac awake while Claude works, then lets it sleep the moment every task is done.">
+<link rel="icon" href="icon.png">
+<style>
+  :root {
+    --bg: #fbf8f5; --fg: #1d1a2b; --muted: #5d5872; --card: #ffffff; --line: #e8e2ec;
+    --accent: #f08a43; --accent-2: #5b3a8c; --code: #f2eef6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #13111c; --fg: #f3effa; --muted: #a59fba; --card: #1c1928; --line: #2c2740; --code: #221e31; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+  header { text-align: center; padding: 72px 0 48px;
+    background: radial-gradient(ellipse at top, rgba(240,138,67,.18), transparent 60%),
+                radial-gradient(ellipse at 20% 0%, rgba(91,58,140,.22), transparent 55%); }
+  header img { width: 128px; height: 128px; filter: drop-shadow(0 14px 24px rgba(0,0,0,.25)); }
+  h1 { font-size: clamp(40px, 7vw, 60px); margin: 12px 0 4px; letter-spacing: -.02em; }
+  .tag { font-size: clamp(18px, 2.6vw, 22px); color: var(--muted); max-width: 620px; margin: 0 auto 28px; }
+  .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 13px 22px; border-radius: 12px; font-weight: 600; text-decoration: none; }
+  .primary { background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: #fff; }
+  .ghost { border: 1px solid var(--line); color: var(--fg); background: var(--card); }
+  .small { color: var(--muted); font-size: 14px; margin-top: 14px; }
+  section { padding: 40px 0; }
+  h2 { font-size: 28px; letter-spacing: -.01em; margin: 0 0 18px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 18px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  ol.steps { padding-left: 22px; }
+  ol.steps li { margin-bottom: 12px; }
+  code { background: var(--code); padding: 2px 6px; border-radius: 6px; font-size: 14px; }
+  pre { background: var(--code); padding: 14px 16px; border-radius: 12px; overflow-x: auto; font-size: 14px; }
+  footer { text-align: center; color: var(--muted); font-size: 14px; padding: 40px 0 60px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <img src="icon.png" alt="">
+    <h1>Sleepable</h1>
+    <p class="tag">Your Mac stays awake while Claude works, then sleeps as soon as every task is done.</p>
+    <div class="btns">
+      <a class="btn primary" href="https://github.com/sekophungula/Sleepable/releases/latest/download/Sleepable.dmg">Download for macOS</a>
+      <a class="btn ghost" href="https://github.com/sekophungula/Sleepable">View source on GitHub</a>
+    </div>
+    <p class="small">Free and open source · macOS 14 Sonoma or later · Apple Silicon &amp; Intel</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+    <h2>What it does</h2>
+    <div class="grid">
+      <div class="card"><h3>☕ Awake while Claude works</h3><p>Long Claude Code runs don't stall because your Mac dozed off. Sleepable holds a power assertion only while a task is in flight.</p></div>
+      <div class="card"><h3>🌙 Sleeps when it's done</h3><p>When the last Claude task finishes (plus a short grace period), Sleepable lets go and your normal Energy settings take over.</p></div>
+      <div class="card"><h3>🎚️ One-click toggle</h3><p>Turn it on or off from the menu bar, or add the Sleepable control to Control Center on macOS 26 and later.</p></div>
+      <div class="card"><h3>🔔 Tells you when it's done</h3><p>An optional notification lets you know Claude has finished and the Mac can rest.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Install</h2>
+    <ol class="steps">
+      <li>Download <strong>Sleepable.dmg</strong> and drag Sleepable into <strong>Applications</strong>.</li>
+      <li>Open it. Sleepable isn't notarized by Apple yet, so the first time macOS will block it. Go to <strong>System Settings → Privacy &amp; Security</strong>, scroll down and click <strong>Open Anyway</strong>. Or run:
+        <pre>xattr -dr com.apple.quarantine /Applications/Sleepable.app</pre></li>
+      <li>The setup page opens. Click <strong>Connect Claude Code</strong> so Sleepable knows exactly when tasks start and stop.</li>
+      <li>Look for the cup icon in your menu bar. Optionally add the <strong>Sleepable</strong> control in Control Center → Edit Controls.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>How it knows Claude is working</h2>
+    <div class="grid">
+      <div class="card"><h3>Claude Code hooks</h3><p>Sleepable adds hooks to <code>~/.claude/settings.json</code>. A prompt marks a session busy and <code>Stop</code> marks it finished. Your existing settings are kept and backed up first.</p></div>
+      <div class="card"><h3>Process fallback</h3><p>Any <code>claude</code> CLI process using CPU also counts as work, which covers sessions that started before you connected the hooks.</p></div>
+    </div>
+    <p class="small">Heads-up: closing a MacBook lid without an external display always puts the Mac to sleep. No app can prevent that without admin changes, so keep the lid open for long runs.</p>
+  </section>
+</main>
+
+<footer>MIT licensed · Not affiliated with Anthropic · <a href="https://github.com/sekophungula/Sleepable/issues">Report an issue</a></footer>
+</body>
+</html>
