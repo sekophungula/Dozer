@@ -1,0 +1,13 @@
+// Dozex website: static files in docs/, served by Cloudflare at dozer.shakatec.co.za.
+// Deploy: npx wrangler@4.166.0 deploy
+{
+  "name": "dozex-website",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./docs",
+    "not_found_handling": "single-page-application"
+  },
+  "routes": [
+    { "pattern": "dozer.shakatec.co.za", "custom_domain": true }
+  ]
+}
