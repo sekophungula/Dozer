@@ -9,7 +9,9 @@ struct MenuView: View {
             HStack(spacing: 10) {
                 StatusOrb(active: state.isHoldingAwake, enabled: state.enabled)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(state.statusTitle).font(.headline)
+                    Text(state.statusTitle)
+                        .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(state.statusDetail)
                         .font(.caption)
                         .foregroundStyle(.secondary)

@@ -127,10 +127,10 @@ final class AppState: ObservableObject {
     }
 
     var statusTitle: String {
-        if !enabled { return "Off — your Mac sleeps normally" }
-        if forceAwake { return "Keeping your Mac awake" }
-        if activity.isWorking { return "Claude is working — staying awake" }
-        if isClaudeActive { return "Claude just finished — winding down" }
+        if !enabled { return "Sleepable is off" }
+        if forceAwake { return "Staying awake" }
+        if activity.isWorking { return "Claude is working" }
+        if isClaudeActive { return "Claude finished" }
         return "Watching for Claude"
     }
 
@@ -143,14 +143,29 @@ final class AppState: ObservableObject {
             parts.append("\(activity.busyProcesses) busy claude process\(activity.busyProcesses == 1 ? "" : "es")")
         }
         if parts.isEmpty {
-            parts.append(enabled ? "Mac can sleep when idle" : "Sleepable is paused")
+            if !enabled {
+                parts.append("Mac sleeps normally")
+            } else if forceAwake {
+                parts.append("Until you turn it off")
+            } else if isClaudeActive, let last = lastActivityAt {
+                let remaining = max(0, Int(graceSeconds - Date().timeIntervalSince(last)))
+                parts.append("Sleep allowed in \(Self.shortDuration(TimeInterval(remaining)))")
+            } else {
+                parts.append("Mac can sleep when idle")
+            }
         }
         if let since = awakeSince {
-            let formatter = RelativeDateTimeFormatter()
-            formatter.unitsStyle = .short
-            parts.append("awake since \(formatter.localizedString(for: since, relativeTo: Date()))")
+            parts.append("awake \(Self.shortDuration(Date().timeIntervalSince(since)))")
         }
         return parts.joined(separator: " · ")
+    }
+
+    private static func shortDuration(_ seconds: TimeInterval) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .abbreviated
+        formatter.maximumUnitCount = 1
+        formatter.allowedUnits = seconds < 60 ? [.second] : [.hour, .minute]
+        return formatter.string(from: seconds) ?? ""
     }
 
     // MARK: Hooks
