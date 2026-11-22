@@ -232,7 +232,8 @@
   .foot h4 { margin: 0 0 16px; font-size: 13px; font-weight: 500; color: var(--fg); }
   .foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; }
   .foot ul a { color: var(--muted); }
-  .foot ul a:hover { color: var(--fg); }
+  .foot ul a:hover, .legal a:hover { color: var(--fg); }
+  .legal a { color: var(--muted); }
   .legal { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--dim); font-size: 13px; }
   @media (max-width: 760px) { .foot { grid-template-columns: 1fr 1fr; } .foot > div:first-child { grid-column: 1 / -1; } }
 
@@ -492,7 +493,7 @@
       <div><h4>Community</h4><ul><li><a href="https://github.com/sekophungula/Dozex" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/sekophungula/Dozex/issues" target="_blank" rel="noopener">Report an issue</a></li></ul></div>
       <div><h4>Company</h4><ul><li><a href="https://shakatec.co.za" target="_blank" rel="noopener">ShakaTec</a></li><li><a href="https://github.com/sekophungula/Dozex/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a></li></ul></div>
     </div>
-    <div class="legal"><span>© 2026 ShakaTec. Not affiliated with Anthropic.</span><span>Made in South Africa.</span></div>
+    <div class="legal"><span>© 2026 <a href="https://shakatec.co.za" target="_blank" rel="noopener">ShakaTec</a>. Not affiliated with Anthropic.</span></div>
   </div>
 </footer>
 
