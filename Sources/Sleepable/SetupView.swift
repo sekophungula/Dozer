@@ -3,6 +3,7 @@ import SwiftUI
 /// The in-app landing page: what Sleepable does and how to set it up.
 struct SetupView: View {
     @EnvironmentObject private var state: AppState
+    @EnvironmentObject private var updater: Updater
 
     var body: some View {
         ScrollView {
@@ -17,6 +18,8 @@ struct SetupView: View {
                              done: true) { toggleStep }
                     StepCard(number: 4, title: "Start with your Mac",
                              done: state.launchAtLogin) { loginStep }
+                    StepCard(number: 5, title: "Stay up to date",
+                             done: updater.status == .upToDate) { updateStep }
                 }
 
                 if let error = state.lastError {
@@ -143,6 +146,48 @@ struct SetupView: View {
         }
         .font(.callout)
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var updateStep: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                switch updater.status {
+                case .available(let version):
+                    Text("Version \(version) is available (you have \(updater.currentVersion)).")
+                    Spacer()
+                    Button("Update Now") { Task { await updater.installUpdate() } }
+                        .buttonStyle(.borderedProminent)
+                case .checking:
+                    ProgressView().controlSize(.small)
+                    Text("Checking…")
+                    Spacer()
+                case .downloading, .installing:
+                    ProgressView().controlSize(.small)
+                    Text(updater.status == .downloading ? "Downloading…" : "Installing — Sleepable will reopen.")
+                    Spacer()
+                case .upToDate:
+                    Label("You're on the latest version (\(updater.currentVersion)).", systemImage: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                    Spacer()
+                    Button("Check Again") { Task { await updater.check() } }
+                case .failed(let message):
+                    Text(message).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true)
+                    Spacer()
+                    Button("Try Again") { Task { await updater.check() } }
+                case .idle:
+                    Text("Version \(updater.currentVersion)")
+                    Spacer()
+                    Button("Check for Updates") { Task { await updater.check() } }
+                }
+            }
+            .font(.callout)
+            Toggle("Check for updates automatically", isOn: $updater.automaticallyChecks)
+                .toggleStyle(.switch)
+            Text("Updates come from this app's GitHub releases and install in place, wherever Sleepable lives.")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 
     private var loginStep: some View {

@@ -10,6 +10,7 @@ struct SleepableApp: App {
         MenuBarExtra {
             MenuView()
                 .environmentObject(state)
+                .environmentObject(Updater.shared)
         } label: {
             Image(systemName: state.menuBarSymbol)
                 .accessibilityLabel("Sleepable")
@@ -23,6 +24,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.accessory)
         Task { @MainActor in
             AppState.shared.start()
+            Updater.shared.startAutomaticChecks()
+            // `Sleepable --install-update` updates without any clicks (handy for scripts).
+            if CommandLine.arguments.contains("--install-update") {
+                await Updater.shared.check()
+                await Updater.shared.installUpdate()
+            }
             if !AppState.shared.hasCompletedSetup {
                 SetupWindowController.shared.show()
             }
@@ -49,7 +56,9 @@ final class SetupWindowController: NSObject, NSWindowDelegate {
 
     func show() {
         if window == nil {
-            let hosting = NSHostingController(rootView: SetupView().environmentObject(AppState.shared))
+            let hosting = NSHostingController(rootView: SetupView()
+                .environmentObject(AppState.shared)
+                .environmentObject(Updater.shared))
             let win = NSWindow(contentViewController: hosting)
             win.title = "Sleepable"
             win.styleMask = [.titled, .closable, .miniaturizable, .fullSizeContentView]
