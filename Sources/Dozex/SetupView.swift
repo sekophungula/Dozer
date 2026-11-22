@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The in-app landing page: what Sleepable does and how to set it up.
+/// The in-app landing page: what Dozex does and how to set it up.
 struct SetupView: View {
     @EnvironmentObject private var state: AppState
     @EnvironmentObject private var updater: Updater
@@ -12,7 +12,7 @@ struct SetupView: View {
                 VStack(spacing: 14) {
                     StepCard(number: 1, title: "Connect Claude Code",
                              done: state.hooksInstalled) { connectStep }
-                    StepCard(number: 2, title: "Choose how Sleepable behaves",
+                    StepCard(number: 2, title: "Choose how Dozex behaves",
                              done: true) { optionsStep }
                     StepCard(number: 3, title: "Put the toggle where you want it",
                              done: true) { toggleStep }
@@ -65,7 +65,7 @@ struct SetupView: View {
                 .resizable()
                 .frame(width: 96, height: 96)
                 .shadow(color: .black.opacity(0.2), radius: 12, y: 6)
-            Text("Sleepable")
+            Text("Dozex")
                 .font(.system(size: 34, weight: .bold, design: .rounded))
             Text("Your Mac stays awake while Claude works,\nthen sleeps the moment every task is done.")
                 .font(.title3)
@@ -85,7 +85,7 @@ struct SetupView: View {
 
     private var connectStep: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Sleepable adds small hooks to Claude Code (`~/.claude/settings.json`) so it knows exactly when a task starts and when Claude stops. Your existing settings are kept and backed up first. Works for the Claude Code CLI and the Code tab in the Claude app.")
+            Text("Dozex adds small hooks to Claude Code (`~/.claude/settings.json`) so it knows exactly when a task starts and when Claude stops. Your existing settings are kept and backed up first. Works for the Claude Code CLI and the Code tab in the Claude app.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -101,7 +101,7 @@ struct SetupView: View {
                     Spacer()
                 }
             }
-            Text("Already-running Claude sessions are picked up on their next prompt. Until then, Sleepable also watches for busy `claude` processes.")
+            Text("Already-running Claude sessions are picked up on their next prompt. Until then, Dozex also watches for busy `claude` processes.")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -110,7 +110,7 @@ struct SetupView: View {
 
     private var optionsStep: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Toggle("Sleepable is on (stay awake while Claude works)", isOn: $state.enabled)
+            Toggle("Dozex is on (stay awake while Claude works)", isOn: $state.enabled)
             Toggle("Keep the display on too, not just the computer", isOn: $state.keepDisplayAwake)
             Toggle("Also treat busy `claude` processes as work", isOn: $state.useProcessHeuristic)
             Toggle("Notify me when Claude is done", isOn: $state.notifyWhenDone)
@@ -132,10 +132,10 @@ struct SetupView: View {
     private var toggleStep: some View {
         VStack(alignment: .leading, spacing: 8) {
             Label {
-                Text("**Menu bar** — the cup icon at the top of your screen. Hold ⌘ and drag it to reorder.")
+                Text("**Menu bar** — the eye icon at the top of your screen. Hold ⌘ and drag it to reorder.")
             } icon: { Image(systemName: "menubar.rectangle") }
             Label {
-                Text("**Control Center** (macOS 26+) — open Control Center, click **Edit Controls**, search “Sleepable” and drag it in. You can also pin it to the menu bar from there.")
+                Text("**Control Center** (macOS 26+) — open Control Center, click **Edit Controls**, search “Dozex” and drag it in. You can also pin it to the menu bar from there.")
             } icon: { Image(systemName: "switch.2") }
             Button("Open Control Center settings") {
                 if let url = URL(string: "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension") {
@@ -163,7 +163,7 @@ struct SetupView: View {
                     Spacer()
                 case .downloading, .installing:
                     ProgressView().controlSize(.small)
-                    Text(updater.status == .downloading ? "Downloading…" : "Installing — Sleepable will reopen.")
+                    Text(updater.status == .downloading ? "Downloading…" : "Installing — Dozex will reopen.")
                     Spacer()
                 case .upToDate:
                     Label("You're on the latest version (\(updater.currentVersion)).", systemImage: "checkmark.circle.fill")
@@ -183,7 +183,7 @@ struct SetupView: View {
             .font(.callout)
             Toggle("Check for updates automatically", isOn: $updater.automaticallyChecks)
                 .toggleStyle(.switch)
-            Text("Updates come from this app's GitHub releases and install in place, wherever Sleepable lives.")
+            Text("Updates come from this app's GitHub releases and install in place, wherever Dozex lives.")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -192,7 +192,7 @@ struct SetupView: View {
 
     private var loginStep: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Toggle("Open Sleepable at login", isOn: Binding(
+            Toggle("Open Dozex at login", isOn: Binding(
                 get: { state.launchAtLogin },
                 set: { state.setLaunchAtLogin($0) }
             ))

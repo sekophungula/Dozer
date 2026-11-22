@@ -8,7 +8,7 @@ struct MenuView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if case .available(let version) = updater.status {
-                UpdateBanner(text: "Sleepable \(version) is available", buttonTitle: "Update") {
+                UpdateBanner(text: "Dozex \(version) is available", buttonTitle: "Update") {
                     Task { await updater.installUpdate() }
                 }
             } else if updater.status == .downloading || updater.status == .installing {
@@ -33,7 +33,7 @@ struct MenuView: View {
 
             Toggle(isOn: $state.enabled) {
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Sleepable").fontWeight(.semibold)
+                    Text("Dozex").fontWeight(.semibold)
                     Text("Stay awake until all Claude tasks are done")
                         .font(.caption).foregroundStyle(.secondary)
                 }
@@ -127,9 +127,9 @@ struct StatusOrb: View {
             Circle()
                 .fill(color.opacity(0.18))
                 .frame(width: 34, height: 34)
-            Image(systemName: enabled ? (active ? "cup.and.heat.waves.fill" : "cup.and.saucer") : "moon.zzz")
+            Image(nsImage: EyeIcon.image(enabled ? (active ? .awake : .dozing) : .off, size: 18))
+                .renderingMode(.template)
                 .foregroundStyle(color)
-                .font(.system(size: 15, weight: .semibold))
         }
     }
 

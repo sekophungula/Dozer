@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key><string>en</string>
-	<key>CFBundleDisplayName</key><string>Sleepable</string>
-	<key>CFBundleExecutable</key><string>SleepableControl</string>
+	<key>CFBundleDisplayName</key><string>Dozex</string>
+	<key>CFBundleExecutable</key><string>DozexControl</string>
 	<key>CFBundleIdentifier</key><string>io.github.sekophungula.sleepable.control</string>
 	<key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
-	<key>CFBundleName</key><string>SleepableControl</string>
+	<key>CFBundleName</key><string>DozexControl</string>
 	<key>CFBundlePackageType</key><string>XPC!</string>
 	<key>CFBundleShortVersionString</key><string>__VERSION__</string>
 	<key>CFBundleVersion</key><string>__BUILD__</string>

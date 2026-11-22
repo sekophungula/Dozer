@@ -1,9 +1,9 @@
 import Foundation
 
-/// Installs / removes the Claude Code hooks that tell Sleepable when a task
+/// Installs / removes the Claude Code hooks that tell Dozex when a task
 /// starts and finishes. Edits `~/.claude/settings.json` non-destructively:
 /// existing settings and hooks are preserved, and a backup is written the
-/// first time Sleepable touches the file.
+/// first time Dozex touches the file.
 enum HookInstaller {
     static let scriptName = "sleepable-hook.sh"
     static var scriptURL: URL { ClaudeMonitor.supportDirectory.appendingPathComponent(scriptName) }
@@ -25,7 +25,7 @@ enum HookInstaller {
 
     static let script = """
     #!/bin/sh
-    # Sleepable hook for Claude Code — https://github.com/sekophungula/Sleepable
+    # Dozex hook for Claude Code — https://github.com/sekophungula/Dozex
     # Marks a Claude Code session as busy (start/touch) or finished (stop).
     dir="$HOME/Library/Application Support/Sleepable/sessions"
     mkdir -p "$dir"
@@ -52,7 +52,7 @@ enum HookInstaller {
         else { return false }
         return events.allSatisfy { entry in
             guard let groups = hooks[entry.event] as? [[String: Any]] else { return false }
-            return groups.contains(where: isSleepableGroup)
+            return groups.contains(where: isDozexGroup)
         }
     }
 
@@ -67,7 +67,7 @@ enum HookInstaller {
         var settings = try readSettings() ?? [:]
         var hooks = settings["hooks"] as? [String: Any] ?? [:]
         for entry in events {
-            var groups = (hooks[entry.event] as? [[String: Any]] ?? []).filter { !isSleepableGroup($0) }
+            var groups = (hooks[entry.event] as? [[String: Any]] ?? []).filter { !isDozexGroup($0) }
             groups.append([
                 "hooks": [[
                     "type": "command",
@@ -85,7 +85,7 @@ enum HookInstaller {
         if var settings = try readSettings(), var hooks = settings["hooks"] as? [String: Any] {
             for entry in events {
                 guard let groups = hooks[entry.event] as? [[String: Any]] else { continue }
-                let kept = groups.filter { !isSleepableGroup($0) }
+                let kept = groups.filter { !isDozexGroup($0) }
                 hooks[entry.event] = kept.isEmpty ? nil : kept
             }
             settings["hooks"] = hooks.isEmpty ? nil : hooks
@@ -97,7 +97,7 @@ enum HookInstaller {
 
     // MARK: - Helpers
 
-    private static func isSleepableGroup(_ group: [String: Any]) -> Bool {
+    private static func isDozexGroup(_ group: [String: Any]) -> Bool {
         guard let hooks = group["hooks"] as? [[String: Any]] else { return false }
         return hooks.contains { ($0["command"] as? String)?.contains(scriptName) == true }
     }
@@ -129,7 +129,7 @@ enum HookInstaller {
     enum InstallError: LocalizedError {
         case unreadableSettings
         var errorDescription: String? {
-            "~/.claude/settings.json isn't valid JSON, so Sleepable left it untouched. Fix the file and try again."
+            "~/.claude/settings.json isn't valid JSON, so Dozex left it untouched. Fix the file and try again."
         }
     }
 }

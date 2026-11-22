@@ -1,6 +1,6 @@
 import Foundation
 
-/// What Sleepable currently knows about Claude.
+/// What Dozex currently knows about Claude.
 struct ClaudeActivity: Equatable {
     /// Claude Code sessions that are mid-task (reported by the hooks).
     var activeSessions: Int = 0
@@ -14,7 +14,7 @@ struct ClaudeActivity: Equatable {
 
 /// Detects whether Claude is working, using two signals:
 ///
-/// 1. **Hooks (precise).** Sleepable installs Claude Code hooks that drop a
+/// 1. **Hooks (precise).** Dozex installs Claude Code hooks that drop a
 ///    marker file per session when a prompt is submitted / a tool runs, and
 ///    delete it when Claude stops. A marker present = a task in flight.
 /// 2. **Process heuristic (fallback).** Any `claude` CLI process using more
@@ -23,7 +23,7 @@ struct ClaudeActivity: Equatable {
 final class ClaudeMonitor {
     static let supportDirectory: URL = {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        return base.appendingPathComponent("Sleepable", isDirectory: true)
+        return base.appendingPathComponent("Sleepable", isDirectory: true) // pre-rename name, kept so existing installs keep working
     }()
 
     static let sessionsDirectory = supportDirectory.appendingPathComponent("sessions", isDirectory: true)

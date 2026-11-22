@@ -103,8 +103,8 @@ final class AppState: ObservableObject {
         let shouldHold = enabled && (forceAwake || claudeActive)
 
         let reason = forceAwake
-            ? "Sleepable: keep awake is on"
-            : "Sleepable: Claude is still working"
+            ? "Dozex: keep awake is on"
+            : "Dozex: Claude is still working"
         assertion.update(holdSystem: shouldHold, holdDisplay: keepDisplayAwake, reason: reason)
 
         if shouldHold != isHoldingAwake {
@@ -121,13 +121,13 @@ final class AppState: ObservableObject {
 
     // MARK: Presentation helpers
 
-    var menuBarSymbol: String {
-        if !enabled { return "moon.zzz" }
-        return isHoldingAwake ? "cup.and.heat.waves.fill" : "cup.and.saucer"
+    var menuBarIcon: EyeIcon.Style {
+        if !enabled { return .off }
+        return isHoldingAwake ? .awake : .dozing
     }
 
     var statusTitle: String {
-        if !enabled { return "Sleepable is off" }
+        if !enabled { return "Dozex is off" }
         if forceAwake { return "Staying awake" }
         if activity.isWorking { return "Claude is working" }
         if isClaudeActive { return "Claude finished" }
@@ -203,7 +203,7 @@ final class AppState: ObservableObject {
             if on { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
             lastError = nil
         } catch {
-            lastError = "Couldn't change Login Items: \(error.localizedDescription). Move Sleepable to /Applications and try again."
+            lastError = "Couldn't change Login Items: \(error.localizedDescription). Move Dozex to /Applications and try again."
         }
         refreshLaunchAtLogin()
     }

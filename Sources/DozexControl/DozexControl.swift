@@ -2,24 +2,24 @@ import AppIntents
 import SwiftUI
 import WidgetKit
 
-/// Control Center / menu bar control for Sleepable (macOS 26+).
+/// Control Center / menu bar control for Dozex (macOS 26+).
 @main
-struct SleepableControlBundle: WidgetBundle {
+struct DozexControlBundle: WidgetBundle {
     var body: some Widget {
-        SleepableToggleControl()
+        DozexToggleControl()
     }
 }
 
-struct SleepableToggleControl: ControlWidget {
+struct DozexToggleControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: SharedState.controlKind, provider: Provider()) { isOn in
-            ControlWidgetToggle("Sleepable", isOn: isOn, action: SetSleepableIntent()) { on in
+            ControlWidgetToggle("Dozex", isOn: isOn, action: SetDozexIntent()) { on in
                 Label(on ? "Awake for Claude" : "Off",
-                      systemImage: on ? "cup.and.heat.waves.fill" : "moon.zzz")
+                      systemImage: on ? "eye" : "moon.zzz")
             }
             .tint(.orange)
         }
-        .displayName("Sleepable")
+        .displayName("Dozex")
         .description("Keep your Mac awake until all Claude tasks are done.")
     }
 
@@ -32,11 +32,11 @@ struct SleepableToggleControl: ControlWidget {
     }
 }
 
-struct SetSleepableIntent: SetValueIntent {
-    static let title: LocalizedStringResource = "Set Sleepable"
-    static let description = IntentDescription("Turn Sleepable on or off.")
+struct SetDozexIntent: SetValueIntent {
+    static let title: LocalizedStringResource = "Set Dozex"
+    static let description = IntentDescription("Turn Dozex on or off.")
 
-    @Parameter(title: "Sleepable is on")
+    @Parameter(title: "Dozex is on")
     var value: Bool
 
     init() {}

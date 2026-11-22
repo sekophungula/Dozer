@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sleepable for Mac</title>
-<meta name="description" content="Sleepable keeps your Mac awake while Claude works, then lets it sleep the moment every task is done.">
+<title>Dozex for Mac</title>
+<meta name="description" content="Dozex keeps your Mac awake while Claude works, then lets it sleep the moment every task is done.">
 <link rel="icon" href="icon.png">
 <style>
   :root {
@@ -47,11 +47,11 @@
 <header>
   <div class="wrap">
     <img src="icon.png" alt="">
-    <h1>Sleepable</h1>
+    <h1>Dozex</h1>
     <p class="tag">Your Mac stays awake while Claude works, then sleeps as soon as every task is done.</p>
     <div class="btns">
-      <a class="btn primary" href="https://github.com/sekophungula/Sleepable/releases/latest/download/Sleepable.dmg">Download for macOS</a>
-      <a class="btn ghost" href="https://github.com/sekophungula/Sleepable">View source on GitHub</a>
+      <a class="btn primary" href="https://github.com/sekophungula/Dozex/releases/latest/download/Dozex.dmg">Download for macOS</a>
+      <a class="btn ghost" href="https://github.com/sekophungula/Dozex">View source on GitHub</a>
     </div>
     <p class="small">Free and open source · macOS 14 Sonoma or later · Apple Silicon &amp; Intel</p>
   </div>
@@ -61,9 +61,9 @@
   <section>
     <h2>What it does</h2>
     <div class="grid">
-      <div class="card"><h3>☕ Awake while Claude works</h3><p>Long Claude Code runs don't stall because your Mac dozed off. Sleepable holds a power assertion only while a task is in flight.</p></div>
-      <div class="card"><h3>🌙 Sleeps when it's done</h3><p>When the last Claude task finishes (plus a short grace period), Sleepable lets go and your normal Energy settings take over.</p></div>
-      <div class="card"><h3>🎚️ One-click toggle</h3><p>Turn it on or off from the menu bar, or add the Sleepable control to Control Center on macOS 26 and later.</p></div>
+      <div class="card"><h3>👁️ Awake while Claude works</h3><p>Long Claude Code runs don't stall because your Mac dozed off. Dozex holds a power assertion only while a task is in flight.</p></div>
+      <div class="card"><h3>🌙 Sleeps when it's done</h3><p>When the last Claude task finishes (plus a short grace period), Dozex lets go and your normal Energy settings take over.</p></div>
+      <div class="card"><h3>🎚️ One-click toggle</h3><p>Turn it on or off from the menu bar, or add the Dozex control to Control Center on macOS 26 and later.</p></div>
       <div class="card"><h3>🔔 Tells you when it's done</h3><p>An optional notification lets you know Claude has finished and the Mac can rest.</p></div>
     </div>
   </section>
@@ -71,24 +71,24 @@
   <section>
     <h2>Install</h2>
     <ol class="steps">
-      <li>Download <strong>Sleepable.dmg</strong> and drag Sleepable into <strong>Applications</strong>.</li>
-      <li>Open it. Sleepable isn't notarized by Apple yet, so the first time macOS will block it. Go to <strong>System Settings → Privacy &amp; Security</strong>, scroll down and click <strong>Open Anyway</strong>. Or run:
-        <pre>xattr -dr com.apple.quarantine /Applications/Sleepable.app</pre></li>
-      <li>The setup page opens. Click <strong>Connect Claude Code</strong> so Sleepable knows exactly when tasks start and stop.</li>
-      <li>Look for the cup icon in your menu bar. Optionally add the <strong>Sleepable</strong> control in Control Center → Edit Controls.</li>
+      <li>Download <strong>Dozex.dmg</strong> and drag Dozex into <strong>Applications</strong>.</li>
+      <li>Open it. Dozex isn't notarized by Apple yet, so the first time macOS will block it. Go to <strong>System Settings → Privacy &amp; Security</strong>, scroll down and click <strong>Open Anyway</strong>. Or run:
+        <pre>xattr -dr com.apple.quarantine /Applications/Dozex.app</pre></li>
+      <li>The setup page opens. Click <strong>Connect Claude Code</strong> so Dozex knows exactly when tasks start and stop.</li>
+      <li>Look for the eye icon in your menu bar. Optionally add the <strong>Dozex</strong> control in Control Center → Edit Controls.</li>
     </ol>
   </section>
 
   <section>
     <h2>How it knows Claude is working</h2>
     <div class="grid">
-      <div class="card"><h3>Claude Code hooks</h3><p>Sleepable adds hooks to <code>~/.claude/settings.json</code>. A prompt marks a session busy and <code>Stop</code> marks it finished. Your existing settings are kept and backed up first.</p></div>
+      <div class="card"><h3>Claude Code hooks</h3><p>Dozex adds hooks to <code>~/.claude/settings.json</code>. A prompt marks a session busy and <code>Stop</code> marks it finished. Your existing settings are kept and backed up first.</p></div>
       <div class="card"><h3>Process fallback</h3><p>Any <code>claude</code> CLI process using CPU also counts as work, which covers sessions that started before you connected the hooks.</p></div>
     </div>
     <p class="small">Heads-up: closing a MacBook lid without an external display always puts the Mac to sleep. No app can prevent that without admin changes, so keep the lid open for long runs.</p>
   </section>
 </main>
 
-<footer>MIT licensed · Not affiliated with Anthropic · <a href="https://github.com/sekophungula/Sleepable/issues">Report an issue</a></footer>
+<footer>MIT licensed · Not affiliated with Anthropic · <a href="https://github.com/sekophungula/Dozex/issues">Report an issue</a></footer>
 </body>
 </html>

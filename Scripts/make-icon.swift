@@ -1,4 +1,5 @@
-// Renders Sleepable's app icon (1024×1024 PNG). Usage: swift make-icon.swift out.png
+// Renders Dozex's app icon (1024×1024 PNG): a dozing eye on violet.
+// Usage: swift make-icon.swift out.png
 import AppKit
 
 let size: CGFloat = 1024
@@ -14,29 +15,32 @@ let inset: CGFloat = 100
 let rect = NSRect(x: inset, y: inset, width: size - inset * 2, height: size - inset * 2)
 let shape = NSBezierPath(roundedRect: rect, xRadius: 185, yRadius: 185)
 
-NSGraphicsContext.current?.cgContext.setShadow(offset: CGSize(width: 0, height: -12), blur: 30,
-                                               color: NSColor.black.withAlphaComponent(0.35).cgColor)
+let ctx = NSGraphicsContext.current!.cgContext
+ctx.setShadow(offset: CGSize(width: 0, height: -12), blur: 30, color: NSColor.black.withAlphaComponent(0.3).cgColor)
 NSColor.black.setFill(); shape.fill()
-NSGraphicsContext.current?.cgContext.setShadow(offset: .zero, blur: 0, color: nil)
+ctx.setShadow(offset: .zero, blur: 0, color: nil)
 
-let gradient = NSGradient(colors: [
-    NSColor(srgbRed: 0.13, green: 0.11, blue: 0.33, alpha: 1),   // night indigo
-    NSColor(srgbRed: 0.42, green: 0.22, blue: 0.55, alpha: 1),   // dusk violet
-    NSColor(srgbRed: 0.98, green: 0.55, blue: 0.27, alpha: 1),   // ember orange
-])!
-gradient.draw(in: shape, angle: -90)
+NSGradient(colors: [
+    NSColor(srgbRed: 0.20, green: 0.12, blue: 0.42, alpha: 1),   // deep violet
+    NSColor(srgbRed: 0.45, green: 0.30, blue: 0.85, alpha: 1),   // lavender
+])!.draw(in: shape, angle: -90)
 
-// Moon (night) top-left, cup (awake) centre.
-func symbol(_ name: String, points: CGFloat, color: NSColor) -> NSImage {
-    let config = NSImage.SymbolConfiguration(pointSize: points, weight: .semibold)
-        .applying(.init(paletteColors: [color]))
-    return NSImage(systemSymbolName: name, accessibilityDescription: nil)!.withSymbolConfiguration(config)!
+// Closed, dozing eye: a lower-lid curve with lashes.
+let cx: CGFloat = 512, cy: CGFloat = 650, w: CGFloat = 280, depth: CGFloat = 250
+NSColor.white.setStroke()
+let lid = NSBezierPath()
+lid.move(to: NSPoint(x: cx - w, y: cy))
+lid.curve(to: NSPoint(x: cx + w, y: cy),
+          controlPoint1: NSPoint(x: cx - w * 0.46, y: cy - depth),
+          controlPoint2: NSPoint(x: cx + w * 0.46, y: cy - depth))
+lid.lineWidth = 54; lid.lineCapStyle = .round; lid.stroke()
+for dx in [-0.65, -0.22, 0.22, 0.65] as [CGFloat] {
+    let x = cx + dx * w, y = cy - depth * 0.75 * (1 - dx * dx)
+    let lash = NSBezierPath()
+    lash.move(to: NSPoint(x: x, y: y))
+    lash.line(to: NSPoint(x: x + dx * 60, y: y - 100))
+    lash.lineWidth = 40; lash.lineCapStyle = .round; lash.stroke()
 }
-let moon = symbol("moon.stars.fill", points: 150, color: NSColor.white.withAlphaComponent(0.85))
-moon.draw(in: NSRect(x: 210, y: 610, width: moon.size.width, height: moon.size.height))
-let cup = symbol("cup.and.heat.waves.fill", points: 330, color: .white)
-let cupRect = NSRect(x: (size - cup.size.width) / 2 + 12, y: 230, width: cup.size.width, height: cup.size.height)
-cup.draw(in: cupRect)
 
 NSGraphicsContext.restoreGraphicsState()
 try! rep.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: out))

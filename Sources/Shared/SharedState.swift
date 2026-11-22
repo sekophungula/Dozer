@@ -1,6 +1,6 @@
 import Foundation
 
-/// State shared between the Sleepable app and its Control Center extension.
+/// State shared between the Dozex app and its Control Center extension.
 ///
 /// The extension is sandboxed, so the file lives inside the extension's own
 /// container; the (unsandboxed) app reads and writes it there. Each side
