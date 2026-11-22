@@ -67,12 +67,18 @@ if [[ "${1:-}" == "--package" ]]; then
   mkdir -p "$LEGACY" && ditto "$APP" "$LEGACY/Sleepable.app"
   (cd "$LEGACY" && ditto -c -k --keepParent Sleepable.app "$OUT/Sleepable.zip")
   rm -rf "$LEGACY"
-  DMG_SRC="$OUT/dmg"
-  mkdir -p "$DMG_SRC"
-  cp -R "$APP" "$DMG_SRC/"
-  ln -s /Applications "$DMG_SRC/Applications"
-  hdiutil create -quiet -volname "Dozex" -srcfolder "$DMG_SRC" -ov -format UDZO "$OUT/Dozex.dmg"
-  rm -rf "$DMG_SRC"
+  # Installer window: background art + icon layout, via dmgbuild (writes the
+  # window settings directly, so no Finder scripting is needed).
+  TOOLS="$ROOT/.build-tools"
+  if [[ ! -x "$TOOLS/bin/dmgbuild" ]]; then
+    echo "▸ Installing dmgbuild into .build-tools (one time)"
+    python3 -m venv "$TOOLS" && "$TOOLS/bin/pip" install -q "dmgbuild==1.6.5"
+  fi
+  xcrun swift "$ROOT/Scripts/make-dmg-background.swift" "$OUT" >/dev/null
+  tiffutil -cathidpicheck "$OUT/background.png" "$OUT/background@2x.png" -out "$OUT/background.tiff" 2>/dev/null
+  "$TOOLS/bin/dmgbuild" -s "$ROOT/Scripts/dmg-settings.py" -D app="$APP" -D background="$OUT/background.tiff" \
+    "Dozex" "$OUT/Dozex.dmg" >/dev/null
+  rm -f "$OUT"/background*.png "$OUT/background.tiff"
 fi
 
 echo "✓ Built $APP"
