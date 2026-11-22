@@ -3,7 +3,7 @@ import AppKit
 /// Dozex's eye, drawn in code so the menu bar matches the app icon.
 /// - `awake`: half-open eye (keeping the Mac up for Claude)
 /// - `dozing`: closed eye with lashes (watching, Mac may sleep)
-/// - `off`: closed eye with a slash
+/// - `off`: the closed eye, faded
 enum EyeIcon {
     enum Style { case awake, dozing, off }
 
@@ -24,6 +24,11 @@ enum EyeIcon {
         let line = s * 0.11
         let cx = rect.midX, cy = rect.minY + s * 0.62
         let w = s * 0.40, depth = s * 0.36
+        // Off: the same closed eye, faded like a disabled control. Fade the
+        // finished drawing as one layer so overlapping strokes don't darken.
+        let ctx = NSGraphicsContext.current?.cgContext
+        if style == .off { ctx?.setAlpha(0.4); ctx?.beginTransparencyLayer(auxiliaryInfo: nil) }
+        defer { if style == .off { ctx?.endTransparencyLayer() } }
         NSColor.black.setStroke(); NSColor.black.setFill()
 
         // Lower lid: a downward curve from corner to corner.
@@ -57,11 +62,5 @@ enum EyeIcon {
             lash.lineWidth = line * 0.85; lash.lineCapStyle = .round; lash.stroke()
         }
 
-        if style == .off {
-            let slash = NSBezierPath()
-            slash.move(to: NSPoint(x: rect.minX + s * 0.12, y: rect.minY + s * 0.1))
-            slash.line(to: NSPoint(x: rect.maxX - s * 0.12, y: rect.maxY - s * 0.1))
-            slash.lineWidth = line; slash.lineCapStyle = .round; slash.stroke()
-        }
     }
 }
