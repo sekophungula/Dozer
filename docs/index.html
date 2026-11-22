@@ -3,92 +3,366 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dozex for Mac</title>
-<meta name="description" content="Dozex keeps your Mac awake while Claude works, then lets it sleep the moment every task is done.">
+<title>Dozex: keep your Mac awake while Claude works</title>
+<meta name="description" content="Dozex is a free menu bar app for macOS that keeps your Mac awake while Claude Code is working, then lets it sleep the moment every task is done.">
+<link rel="canonical" href="https://dozer.shakatec.co.za/">
+<meta property="og:title" content="Dozex for Mac">
+<meta property="og:description" content="Keep your Mac awake while Claude works. Let it sleep when Claude is done.">
+<meta property="og:image" content="https://dozer.shakatec.co.za/icon.png">
+<meta property="og:url" content="https://dozer.shakatec.co.za/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#2f1d63">
 <link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <style>
   :root {
-    --bg: #fbf8f5; --fg: #1d1a2b; --muted: #5d5872; --card: #ffffff; --line: #e8e2ec;
-    --accent: #f08a43; --accent-2: #5b3a8c; --code: #f2eef6;
+    --bg: #ffffff; --bg-soft: #f7f5fc; --fg: #17132a; --muted: #5f5a75; --line: #e7e3f1;
+    --brand: #5b3fd0; --brand-deep: #2f1d63; --brand-soft: #efeafe; --card: #ffffff;
+    --shadow: 0 1px 2px rgba(23,19,42,.06), 0 12px 32px rgba(23,19,42,.08);
+    --code: #f3f1f8;
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg: #13111c; --fg: #f3effa; --muted: #a59fba; --card: #1c1928; --line: #2c2740; --code: #221e31; }
+    :root { --bg: #0f0d18; --bg-soft: #15121f; --fg: #f1eefa; --muted: #a49fbb; --line: #272238;
+      --brand: #9b85ff; --brand-soft: #221b3d; --card: #17141f; --code: #1d1929;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35); }
   }
   * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
   body { margin: 0; background: var(--bg); color: var(--fg);
-    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; }
-  .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
-  header { text-align: center; padding: 72px 0 48px;
-    background: radial-gradient(ellipse at top, rgba(240,138,67,.18), transparent 60%),
-                radial-gradient(ellipse at 20% 0%, rgba(91,58,140,.22), transparent 55%); }
-  header img { width: 128px; height: 128px; filter: drop-shadow(0 14px 24px rgba(0,0,0,.25)); }
-  h1 { font-size: clamp(40px, 7vw, 60px); margin: 12px 0 4px; letter-spacing: -.02em; }
-  .tag { font-size: clamp(18px, 2.6vw, 22px); color: var(--muted); max-width: 620px; margin: 0 auto 28px; }
-  .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .btn { display: inline-block; padding: 13px 22px; border-radius: 12px; font-weight: 600; text-decoration: none; }
-  .primary { background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: #fff; }
-  .ghost { border: 1px solid var(--line); color: var(--fg); background: var(--card); }
-  .small { color: var(--muted); font-size: 14px; margin-top: 14px; }
-  section { padding: 40px 0; }
-  h2 { font-size: 28px; letter-spacing: -.01em; margin: 0 0 18px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
-  .card h3 { margin: 0 0 6px; font-size: 18px; }
-  .card p { margin: 0; color: var(--muted); font-size: 15px; }
-  ol.steps { padding-left: 22px; }
-  ol.steps li { margin-bottom: 12px; }
-  code { background: var(--code); padding: 2px 6px; border-radius: 6px; font-size: 14px; }
-  pre { background: var(--code); padding: 14px 16px; border-radius: 12px; overflow-x: auto; font-size: 14px; }
-  footer { text-align: center; color: var(--muted); font-size: 14px; padding: 40px 0 60px; }
-  a { color: var(--accent); }
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; }
+  a { color: var(--brand); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  @media (max-width: 600px) { .wrap { padding: 0 16px; } }
+
+  /* Nav */
+  nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: saturate(180%) blur(12px); -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; color: var(--fg); letter-spacing: -.01em; }
+  .brand:hover { text-decoration: none; }
+  .brand img { width: 30px; height: 30px; }
+  .nav-links { display: flex; align-items: center; gap: 22px; font-size: 15px; }
+  .nav-links a:not(.btn) { color: var(--muted); }
+  .nav-links a:not(.btn):hover { color: var(--fg); text-decoration: none; }
+  @media (max-width: 600px) { .nav-links .hide-sm { display: none; } }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 10px;
+    font-weight: 600; font-size: 15px; line-height: 1; transition: transform .15s, box-shadow .15s, background .15s; }
+  .btn:hover { text-decoration: none; transform: translateY(-1px); }
+  .btn-primary { background: var(--brand-deep); color: #fff; box-shadow: 0 6px 18px rgba(47,29,99,.28); }
+  @media (prefers-color-scheme: dark) { .btn-primary { background: #6d52e0; } }
+  .btn-secondary { background: var(--card); color: var(--fg); border: 1px solid var(--line); }
+  .btn-sm { padding: 9px 14px; font-size: 14px; }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* Hero */
+  .hero { position: relative; overflow: hidden; padding: 88px 0 72px; text-align: center;
+    background: radial-gradient(60% 60% at 50% 0%, var(--brand-soft), transparent 70%); }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px;
+    background: var(--brand-soft); color: var(--brand); font-size: 13px; font-weight: 600; margin-bottom: 22px; }
+  .hero h1 { font-size: clamp(36px, 6.2vw, 64px); line-height: 1.05; letter-spacing: -.035em; margin: 0 auto 20px; max-width: 800px; }
+  .hero h1 span { color: var(--brand); }
+  .lead { font-size: clamp(17px, 2.2vw, 20px); color: var(--muted); max-width: 620px; margin: 0 auto 32px; }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .meta { color: var(--muted); font-size: 13px; margin-top: 16px; }
+
+  /* Menu bar mockup */
+  .demo { margin: 56px auto 0; max-width: 560px; text-align: left; }
+  .menubar { height: 30px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: flex-end; gap: 16px;
+    padding: 0 14px; font-size: 13px; font-weight: 500; color: #fff;
+    background: linear-gradient(90deg, #3a2a7a, #5a3fb8 55%, #7b5ad6); }
+  .menubar .mb-eye { display: inline-flex; padding: 3px 6px; border-radius: 5px; background: rgba(255,255,255,.22); }
+  .menubar svg { width: 18px; height: 18px; color: #fff; }
+  .panel { margin: 8px 12px 0 auto; width: 300px; max-width: calc(100% - 24px); background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; box-shadow: var(--shadow); padding: 16px; font-size: 14px; }
+  .panel-head { display: flex; align-items: center; gap: 12px; }
+  .orb { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: rgba(240,138,67,.16); color: #e07a2f; flex: none; }
+  .orb svg { width: 20px; height: 20px; }
+  .panel-title { font-weight: 600; }
+  .panel-sub { color: var(--muted); font-size: 13px; }
+  .panel hr { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
+  .row { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 13px; padding: 3px 0; }
+  .toggle { width: 34px; height: 20px; border-radius: 999px; background: #34c759; position: relative; }
+  .toggle::after { content: ""; position: absolute; right: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #e07a2f; margin-right: 6px; animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .35; } }
+  @media (prefers-reduced-motion: reduce) { .dot { animation: none; } .btn { transition: none; } }
+
+  /* Sections */
+  section { padding: 88px 0; }
+  section.alt { background: var(--bg-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .section-head { text-align: center; max-width: 640px; margin: 0 auto 48px; }
+  .section-head h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -.025em; line-height: 1.15; margin: 0 0 12px; }
+  .section-head p { color: var(--muted); font-size: 17px; margin: 0; }
+  @media (max-width: 600px) { section { padding: 64px 0; } .hero { padding: 64px 0 56px; } }
+
+  /* Steps */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: step; }
+  .step { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
+  .step-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); margin-bottom: 18px; }
+  .step-icon svg { width: 22px; height: 22px; }
+  .step h3 { font-size: 18px; margin: 0 0 6px; letter-spacing: -.01em; }
+  .step p { color: var(--muted); margin: 0; font-size: 15px; }
+  .step-num { font-size: 12px; font-weight: 700; color: var(--brand); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+
+  /* Features */
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .feature { background: var(--card); padding: 28px; display: flex; gap: 16px; }
+  .feature svg { width: 22px; height: 22px; color: var(--brand); flex: none; margin-top: 3px; }
+  .feature h3 { font-size: 17px; margin: 0 0 4px; letter-spacing: -.01em; }
+  .feature p { color: var(--muted); margin: 0; font-size: 15px; }
+  @media (max-width: 820px) { .steps, .features { grid-template-columns: 1fr; } }
+
+  /* Install */
+  .install { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .install h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -.025em; line-height: 1.15; margin: 0 0 12px; }
+  .install > div > p { color: var(--muted); font-size: 17px; margin: 0 0 28px; }
+  ol.install-list { list-style: none; margin: 0; padding: 0; counter-reset: i; }
+  ol.install-list li { counter-increment: i; position: relative; padding: 0 0 22px 44px; }
+  ol.install-list li::before { content: counter(i); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--brand-soft); color: var(--brand); font-weight: 700; font-size: 14px; display: grid; place-items: center; }
+  ol.install-list strong { display: block; margin-bottom: 2px; }
+  ol.install-list span { color: var(--muted); font-size: 15px; }
+  .code { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; background: var(--code);
+    border: 1px solid var(--line); border-radius: 10px; padding: 10px 10px 10px 14px; font: 13px/1.4 ui-monospace, "SF Mono", Menlo, monospace; }
+  .code code { overflow-x: auto; white-space: nowrap; }
+  .copy { flex: none; border: 1px solid var(--line); background: var(--card); color: var(--fg); border-radius: 7px; padding: 5px 9px; font: 600 12px/1 inherit; font-family: inherit; cursor: pointer; }
+  @media (max-width: 820px) { .install { grid-template-columns: 1fr; gap: 24px; } }
+
+  /* FAQ */
+  .faq { max-width: 760px; margin: 0 auto; }
+  details { border-bottom: 1px solid var(--line); padding: 18px 0; }
+  details:first-child { border-top: 1px solid var(--line); }
+  summary { cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--muted); font-weight: 400; font-size: 22px; line-height: 1; }
+  details[open] summary::after { content: "−"; }
+  details p { color: var(--muted); margin: 10px 0 0; }
+  code.inline { background: var(--code); padding: 1px 6px; border-radius: 5px; font-size: 14px; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+
+  /* Final CTA + footer */
+  .final { text-align: center; }
+  .final img { width: 88px; height: 88px; margin-bottom: 18px; }
+  footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  footer a { color: var(--muted); }
+  .foot-links { display: flex; gap: 20px; }
 </style>
 </head>
 <body>
-<header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <clipPath id="eye-open"><path d="M1.8 6.84C5.69 13.32 12.31 13.32 16.2 6.84Z"/></clipPath>
+  </defs>
+  <symbol id="eye-dozing" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-linecap="round">
+    <path d="M1.8 6.84C5.69 13.32 12.31 13.32 16.2 6.84" stroke-width="1.98"/>
+    <path d="M4.54 9.83L3.65 12.71M9 11.7V14.58M13.46 9.83L14.35 12.71" stroke-width="1.68"/>
+  </symbol>
+  <symbol id="eye-awake" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-linecap="round">
+    <circle cx="9" cy="6.84" r="3.24" fill="currentColor" stroke="none" clip-path="url(#eye-open)"/>
+    <path d="M1.8 6.84C5.69 13.32 12.31 13.32 16.2 6.84" stroke-width="1.98"/>
+    <path d="M1.26 6.84H16.74" stroke-width="2.18"/>
+    <path d="M4.54 9.83L3.65 12.71M9 11.7V14.58M13.46 9.83L14.35 12.71" stroke-width="1.68"/>
+  </symbol>
+</svg>
+
+<nav>
   <div class="wrap">
-    <img src="icon.png" alt="">
-    <h1>Dozex</h1>
-    <p class="tag">Your Mac stays awake while Claude works, then sleeps as soon as every task is done.</p>
-    <div class="btns">
-      <a class="btn primary" href="https://github.com/sekophungula/Dozex/releases/latest/download/Dozex.dmg">Download for macOS</a>
-      <a class="btn ghost" href="https://github.com/sekophungula/Dozex">View source on GitHub</a>
+    <a class="brand" href="#"><img src="icon.png" alt="">Dozex</a>
+    <div class="nav-links">
+      <a class="hide-sm" href="#how">How it works</a>
+      <a class="hide-sm" href="#faq">FAQ</a>
+      <a class="hide-sm" href="https://github.com/sekophungula/Dozex">GitHub</a>
+      <a class="btn btn-primary btn-sm" href="https://github.com/sekophungula/Dozex/releases/latest/download/Dozex.dmg">Download</a>
     </div>
-    <p class="small">Free and open source · macOS 14 Sonoma or later · Apple Silicon &amp; Intel</p>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Free menu bar app for macOS</div>
+    <h1>Keep your Mac awake<br>while <span>Claude works</span>.</h1>
+    <p class="lead">Dozex keeps your Mac from sleeping while a Claude Code task is running, then lets it rest the moment the work is done. You don't need timers or to remember to turn it off.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://github.com/sekophungula/Dozex/releases/latest/download/Dozex.dmg">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.16.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.03-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.59-.03-.01-2.42-.93-2.44-3.67zM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.28z"/></svg>
+        Download for Mac
+      </a>
+      <a class="btn btn-secondary" href="https://github.com/sekophungula/Dozex">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+    <p class="meta">macOS 14 Sonoma or later · Apple Silicon &amp; Intel · Open source</p>
+
+    <div class="demo" aria-hidden="true">
+      <div class="menubar">
+        <span>Wi‑Fi</span>
+        <span class="mb-eye"><svg><use href="#eye-awake"/></svg></span>
+        <span>Sat 22 Nov&nbsp;&nbsp;21:14</span>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <div class="orb"><svg><use href="#eye-awake"/></svg></div>
+          <div>
+            <div class="panel-title">Claude is working</div>
+            <div class="panel-sub"><span class="dot"></span>Keeping your Mac awake</div>
+          </div>
+        </div>
+        <hr>
+        <div class="row"><span>Dozex is on</span><span class="toggle"></span></div>
+        <div class="row"><span>Active Claude sessions</span><span>2</span></div>
+        <div class="row"><span>Sleeps after the last task</span><span>Automatic</span></div>
+      </div>
+    </div>
   </div>
 </header>
 
-<main class="wrap">
-  <section>
-    <h2>What it does</h2>
-    <div class="grid">
-      <div class="card"><h3>👁️ Awake while Claude works</h3><p>Long Claude Code runs don't stall because your Mac dozed off. Dozex holds a power assertion only while a task is in flight.</p></div>
-      <div class="card"><h3>🌙 Sleeps when it's done</h3><p>When the last Claude task finishes (plus a short grace period), Dozex lets go and your normal Energy settings take over.</p></div>
-      <div class="card"><h3>🎚️ One-click toggle</h3><p>Turn it on or off from the menu bar, or add the Dozex control to Control Center on macOS 26 and later.</p></div>
-      <div class="card"><h3>🔔 Tells you when it's done</h3><p>An optional notification lets you know Claude has finished and the Mac can rest.</p></div>
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Stays awake while Claude works</h2>
+      <p>Your energy settings still apply. Dozex only holds off sleep while Claude is actually doing something.</p>
     </div>
-  </section>
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6M12 19h8"/></svg></div>
+        <div class="step-num">Step 1</div>
+        <h3>You start a task</h3>
+        <p>Send Claude a prompt in the CLI or the Claude app's Code tab. Dozex notices right away.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon"><svg viewBox="0 0 18 18"><use href="#eye-awake"/></svg></div>
+        <div class="step-num">Step 2</div>
+        <h3>Your Mac stays up</h3>
+        <p>The menu bar eye opens while Claude works, so long builds and refactors run through without the Mac falling asleep.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon"><svg viewBox="0 0 18 18"><use href="#eye-dozing"/></svg></div>
+        <div class="step-num">Step 3</div>
+        <h3>It dozes off when done</h3>
+        <p>When the last task finishes, Dozex steps aside and your Mac sleeps on its usual schedule.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <section>
-    <h2>Install</h2>
-    <ol class="steps">
-      <li>Download <strong>Dozex.dmg</strong> and drag Dozex into <strong>Applications</strong>.</li>
-      <li>Open it. Dozex isn't notarized by Apple yet, so the first time macOS will block it. Go to <strong>System Settings → Privacy &amp; Security</strong>, scroll down and click <strong>Open Anyway</strong>. Or run:
-        <pre>xattr -dr com.apple.quarantine /Applications/Dozex.app</pre></li>
-      <li>The setup page opens. Click <strong>Connect Claude Code</strong> so Dozex knows exactly when tasks start and stop.</li>
-      <li>Look for the eye icon in your menu bar. Optionally add the <strong>Dozex</strong> control in Control Center → Edit Controls.</li>
+<section class="alt">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Small, quiet and precise</h2>
+      <p>No windows to manage and no settings to tune. It sits in your menu bar.</p>
+    </div>
+    <div class="features">
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+        <div><h3>Connects to Claude Code</h3><p>Lightweight Claude Code hooks tell Dozex exactly when a task starts and stops. Your existing settings are backed up first.</p></div>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <div><h3>Sleeps as soon as it can</h3><p>There's no fixed timer. When Claude is done, so is Dozex, so your battery and energy settings aren't fighting it.</p></div>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 10h3M8 14h8"/><circle cx="16" cy="10" r="1.5"/></svg>
+        <div><h3>Menu bar and Control Center</h3><p>Turn it on or off with one click, or add the Dozex control to Control Center on macOS 26.</p></div>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <div><h3>Done notifications</h3><p>Optionally get a notification when Claude finishes, so you know when to come back.</p></div>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+        <div><h3>Updates itself</h3><p>New versions install in place with one click from the menu bar. You don't need to download them again.</p></div>
+      </div>
+      <div class="feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg>
+        <div><h3>Private and open source</h3><p>Everything runs on your Mac. No accounts and no analytics, and the code is on GitHub under the MIT license.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap install">
+    <div>
+      <h2>Set up in a minute</h2>
+      <p>Dozex is a small download that works on Apple Silicon and Intel Macs running macOS 14 or later.</p>
+      <a class="btn btn-primary" href="https://github.com/sekophungula/Dozex/releases/latest/download/Dozex.dmg">Download Dozex.dmg</a>
+    </div>
+    <ol class="install-list">
+      <li><strong>Drag Dozex into Applications</strong><span>Open the downloaded disk image and drag the app across.</span></li>
+      <li><strong>Allow it to open</strong><span>Dozex isn't notarized by Apple yet. The first time you open it, go to System Settings → Privacy &amp; Security and click <em>Open Anyway</em>, or run:</span>
+        <div class="code"><code id="cmd">xattr -dr com.apple.quarantine /Applications/Dozex.app</code><button class="copy" type="button" data-copy="cmd">Copy</button></div>
+      </li>
+      <li><strong>Connect Claude Code</strong><span>Click <em>Connect Claude Code</em> on the setup page. That's it. Look for the eye in your menu bar.</span></li>
     </ol>
-  </section>
+  </div>
+</section>
 
-  <section>
-    <h2>How it knows Claude is working</h2>
-    <div class="grid">
-      <div class="card"><h3>Claude Code hooks</h3><p>Dozex adds hooks to <code>~/.claude/settings.json</code>. A prompt marks a session busy and <code>Stop</code> marks it finished. Your existing settings are kept and backed up first.</p></div>
-      <div class="card"><h3>Process fallback</h3><p>Any <code>claude</code> CLI process using CPU also counts as work, which covers sessions that started before you connected the hooks.</p></div>
+<section class="alt" id="faq">
+  <div class="wrap">
+    <div class="section-head"><h2>Questions</h2></div>
+    <div class="faq">
+      <details>
+        <summary>Does it work with the Claude desktop app?</summary>
+        <p>Yes. Dozex works with the Claude Code CLI and with the Code tab in the Claude desktop app. Both use the same Claude Code hooks.</p>
+      </details>
+      <details>
+        <summary>What happens if I close my MacBook's lid?</summary>
+        <p>macOS always sleeps when the lid closes without an external display, and no app can override that without admin changes. Keep the lid open for long runs, or use an external display.</p>
+      </details>
+      <details>
+        <summary>What does it change on my Mac?</summary>
+        <p>It adds a few hooks to <code class="inline">~/.claude/settings.json</code>, after backing up the original. Disconnecting from the setup page removes them again. To keep the Mac awake it uses a standard macOS power assertion, the same one apps use to stop the screen sleeping during video.</p>
+      </details>
+      <details>
+        <summary>What if a session started before I installed Dozex?</summary>
+        <p>Dozex also treats any busy <code class="inline">claude</code> process as work, so sessions that are already running are covered until their next prompt picks up the hooks.</p>
+      </details>
+      <details>
+        <summary>Is it free?</summary>
+        <p>Yes. Dozex is free and open source under the MIT license.</p>
+      </details>
     </div>
-    <p class="small">Heads-up: closing a MacBook lid without an external display always puts the Mac to sleep. No app can prevent that without admin changes, so keep the lid open for long runs.</p>
-  </section>
-</main>
+  </div>
+</section>
 
-<footer>MIT licensed · Not affiliated with Anthropic · <a href="https://github.com/sekophungula/Dozex/issues">Report an issue</a></footer>
+<section class="final">
+  <div class="wrap">
+    <img src="icon.png" alt="Dozex icon">
+    <div class="section-head" style="margin-bottom:28px">
+      <h2>Let Claude finish the job</h2>
+      <p>Then let your Mac get some rest.</p>
+    </div>
+    <a class="btn btn-primary" href="https://github.com/sekophungula/Dozex/releases/latest/download/Dozex.dmg">Download for Mac</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Dozex · MIT licensed · Not affiliated with Anthropic</span>
+    <span class="foot-links">
+      <a href="https://github.com/sekophungula/Dozex">GitHub</a>
+      <a href="https://github.com/sekophungula/Dozex/releases">Releases</a>
+      <a href="https://github.com/sekophungula/Dozex/issues">Report an issue</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var text = document.getElementById(b.dataset.copy).textContent;
+      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () {
+        b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500);
+      }).catch(function () {});
+    });
+  });
+</script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <p align="center">Keeps your Mac awake while Claude works, then lets it sleep the moment every task is done.</p>
 <p align="center">
   <a href="https://github.com/sekophungula/Dozex/releases/latest/download/Dozex.dmg"><b>Download for macOS</b></a> ·
-  <a href="https://sekophungula.github.io/Dozex/">Website</a>
+  <a href="https://dozer.shakatec.co.za">Website</a>
 </p>
 
 ---
