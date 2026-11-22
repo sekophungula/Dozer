@@ -8,8 +8,11 @@ struct ClaudeActivity: Equatable {
     var busyProcesses: Int = 0
     /// Any `claude` CLI process running at all, busy or not.
     var runningProcesses: Int = 0
+    /// Terminals with a command or busy CLI agent running (see `TerminalMonitor`).
+    var busyTerminals: [TerminalMonitor.BusyTerminal] = []
 
-    var isWorking: Bool { activeSessions > 0 || busyProcesses > 0 }
+    var isClaudeWorking: Bool { activeSessions > 0 || busyProcesses > 0 }
+    var isWorking: Bool { isClaudeWorking || !busyTerminals.isEmpty }
 }
 
 /// Detects whether Claude is working, using two signals:
@@ -34,8 +37,11 @@ final class ClaudeMonitor {
     private let hardStaleAge: TimeInterval = 6 * 60 * 60
     private let cpuThreshold: Double = 3.0
 
-    func snapshot(useProcessHeuristic: Bool) -> ClaudeActivity {
+    private let terminals = TerminalMonitor()
+
+    func snapshot(useProcessHeuristic: Bool, watchTerminals: Bool) -> ClaudeActivity {
         var activity = ClaudeActivity()
+        if watchTerminals { activity.busyTerminals = terminals.busyTerminals() }
         let processes = claudeProcesses()
         activity.runningProcesses = processes.count
         if useProcessHeuristic {

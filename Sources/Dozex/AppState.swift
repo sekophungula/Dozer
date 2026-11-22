@@ -21,6 +21,8 @@ final class AppState: ObservableObject {
     @Published var keepDisplayAwake: Bool { didSet { persist(); evaluate() } }
     /// Count busy `claude` CLI processes as work, in addition to hooks.
     @Published var useProcessHeuristic: Bool { didSet { persist(); evaluate() } }
+    /// Stay awake while a command or CLI agent is running in any terminal.
+    @Published var watchTerminals: Bool { didSet { persist(); evaluate() } }
     /// Post a notification when Claude finishes and sleep is allowed again.
     @Published var notifyWhenDone: Bool { didSet { persist(); if notifyWhenDone { requestNotificationPermission() } } }
     /// Seconds to stay awake after the last sign of Claude activity.
@@ -50,6 +52,7 @@ final class AppState: ObservableObject {
             "forceAwake": false,
             "keepDisplayAwake": false,
             "useProcessHeuristic": true,
+            "watchTerminals": true,
             "notifyWhenDone": true,
             "graceSeconds": 60.0,
             "hasCompletedSetup": false,
@@ -58,6 +61,7 @@ final class AppState: ObservableObject {
         forceAwake = defaults.bool(forKey: "forceAwake")
         keepDisplayAwake = defaults.bool(forKey: "keepDisplayAwake")
         useProcessHeuristic = defaults.bool(forKey: "useProcessHeuristic")
+        watchTerminals = defaults.bool(forKey: "watchTerminals")
         notifyWhenDone = defaults.bool(forKey: "notifyWhenDone")
         graceSeconds = defaults.double(forKey: "graceSeconds")
         hasCompletedSetup = defaults.bool(forKey: "hasCompletedSetup")
@@ -95,7 +99,7 @@ final class AppState: ObservableObject {
 
     func evaluate() {
         guard !loading else { return }
-        let snapshot = monitor.snapshot(useProcessHeuristic: useProcessHeuristic)
+        let snapshot = monitor.snapshot(useProcessHeuristic: useProcessHeuristic, watchTerminals: watchTerminals)
         activity = snapshot
         if snapshot.isWorking { lastActivityAt = Date() }
 
@@ -104,7 +108,9 @@ final class AppState: ObservableObject {
 
         let reason = forceAwake
             ? "Dozex: keep awake is on"
-            : "Dozex: Claude is still working"
+            : snapshot.isClaudeWorking || snapshot.busyTerminals.isEmpty
+                ? "Dozex: Claude is still working"
+                : "Dozex: a terminal command is still running"
         assertion.update(holdSystem: shouldHold, holdDisplay: keepDisplayAwake, reason: reason)
 
         if shouldHold != isHoldingAwake {
@@ -129,9 +135,19 @@ final class AppState: ObservableObject {
     var statusTitle: String {
         if !enabled { return "Dozex is off" }
         if forceAwake { return "Staying awake" }
-        if activity.isWorking { return "Claude is working" }
-        if isClaudeActive { return "Claude finished" }
-        return "Watching for Claude"
+        if activity.isClaudeWorking { return "Claude is working" }
+        if let first = activity.busyTerminals.first {
+            return first.isAgent ? "\(first.command) is working" : "Terminal is busy"
+        }
+        if isClaudeActive { return "Work finished" }
+        return watchTerminals ? "Watching Claude and Terminal" : "Watching for Claude"
+    }
+
+    /// "npm, codex" — what's running in terminals, deduplicated.
+    private var terminalSummary: String {
+        var seen = Set<String>()
+        let names = activity.busyTerminals.map(\.command).filter { seen.insert($0).inserted }
+        return names.prefix(3).joined(separator: ", ") + (names.count > 3 ? "…" : "")
     }
 
     var statusDetail: String {
@@ -141,6 +157,9 @@ final class AppState: ObservableObject {
         }
         if activity.busyProcesses > 0, activity.activeSessions == 0 {
             parts.append("\(activity.busyProcesses) busy claude process\(activity.busyProcesses == 1 ? "" : "es")")
+        }
+        if !activity.busyTerminals.isEmpty {
+            parts.append("\(terminalSummary) running in Terminal")
         }
         if parts.isEmpty {
             if !enabled {
@@ -249,10 +268,10 @@ final class AppState: ObservableObject {
 
     private func postDoneNotification() {
         let content = UNMutableNotificationContent()
-        content.title = "Claude is done"
+        content.title = "All done"
         content.body = forceAwake
-            ? "All Claude tasks finished. Keep-awake is still on."
-            : "All Claude tasks finished — your Mac can sleep again."
+            ? "Claude and your terminal commands have finished. Keep-awake is still on."
+            : "Claude and your terminal commands have finished, so your Mac can sleep again."
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request)
     }
@@ -265,6 +284,7 @@ final class AppState: ObservableObject {
         defaults.set(forceAwake, forKey: "forceAwake")
         defaults.set(keepDisplayAwake, forKey: "keepDisplayAwake")
         defaults.set(useProcessHeuristic, forKey: "useProcessHeuristic")
+        defaults.set(watchTerminals, forKey: "watchTerminals")
         defaults.set(notifyWhenDone, forKey: "notifyWhenDone")
         defaults.set(graceSeconds, forKey: "graceSeconds")
         defaults.set(hasCompletedSetup, forKey: "hasCompletedSetup")

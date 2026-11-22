@@ -113,9 +113,15 @@ struct SetupView: View {
             Toggle("Dozex is on (stay awake while Claude works)", isOn: $state.enabled)
             Toggle("Keep the display on too, not just the computer", isOn: $state.keepDisplayAwake)
             Toggle("Also treat busy `claude` processes as work", isOn: $state.useProcessHeuristic)
-            Toggle("Notify me when Claude is done", isOn: $state.notifyWhenDone)
+            VStack(alignment: .leading, spacing: 2) {
+                Toggle("Stay awake while anything runs in a terminal", isOn: $state.watchTerminals)
+                Text("Covers builds, scripts and CLI agents like Codex, Gemini and Aider in Terminal, iTerm, Ghostty, VS Code and others. Agents, editors and `ssh` only count while they're busy, so an idle session doesn't keep your Mac up.")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .padding(.leading, 20)
+            }
+            Toggle("Notify me when the work is done", isOn: $state.notifyWhenDone)
             HStack {
-                Text("Stay awake after Claude finishes for")
+                Text("Stay awake after the work finishes for")
                 Picker("", selection: $state.graceSeconds) {
                     Text("10 seconds").tag(10.0)
                     Text("1 minute").tag(60.0)

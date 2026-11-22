@@ -8,16 +8,17 @@
 
 ---
 
-Dozex is a small menu bar app for macOS. While a Claude Code task is running it stops your Mac from idle-sleeping. When the last task finishes it releases the hold, so your normal Energy settings apply again.
+Dozex is a small menu bar app for macOS. While Claude Code, another CLI agent or any terminal command is running, it stops your Mac from idle-sleeping. When the work finishes it releases the hold, so your normal Energy settings apply again.
 
 ## Features
 
 - **Menu bar toggle.** An eye icon at the top of the screen shows the status and turns Dozex on or off.
 - **Control Center control** (macOS 26+). Add *Dozex* in Control Center → Edit Controls.
 - **Accurate tracking** through Claude Code hooks, with a fallback that watches for busy `claude` processes.
+- **Terminal watching.** A command running in any terminal (Terminal, iTerm, Ghostty, Warp, VS Code, tmux) keeps the Mac awake. CLI agents such as Codex, Gemini CLI and Aider, plus editors, `ssh` and REPLs, count only while they're using CPU, so an idle session doesn't keep the Mac up. Turn it off with *Watch Terminal*.
 - **Grace period.** Stays awake for a configurable time after Claude finishes, so back-to-back prompts don't let the Mac drop off between them.
 - **Keep awake indefinitely**, for when you want plain caffeinate-style behaviour.
-- **Optional display-awake mode** and a **"Claude is done" notification**.
+- **Optional display-awake mode** and a **"done" notification**.
 - **Open at login.**
 
 ## Install
@@ -34,6 +35,7 @@ Dozex is a small menu bar app for macOS. While a Claude Code task is running it 
 | Piece | What it does |
 | --- | --- |
 | `PowerAssertion` | Holds an IOKit `PreventUserIdleSystemSleep` assertion (the same mechanism `caffeinate` uses) and, if you choose, `PreventUserIdleDisplaySleep`. |
+| `TerminalMonitor` | Every few seconds, reads `ps` and checks each terminal's foreground job. A non-shell command counts as work. Known agents and interactive programs count only above 3% CPU (summed over that terminal). |
 | `HookInstaller` | Adds hooks for `UserPromptSubmit`, `PreToolUse` and `PostToolUse` (mark busy) and for `Stop` and `SessionEnd` (mark done) to `~/.claude/settings.json`. Each hook calls a tiny shell script that creates or deletes a marker file per session in `~/Library/Application Support/Sleepable/sessions`. |
 | `ClaudeMonitor` | Every 3 seconds it counts live session markers and busy `claude` processes. Stale markers left behind by crashed sessions are cleaned up automatically. |
 | `DozexControl.appex` | A WidgetKit `ControlWidgetToggle` for Control Center. It talks to the app through a small state file and Darwin notifications. |

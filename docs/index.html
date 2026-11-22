@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dozex: keep your Mac awake while Claude works</title>
-<meta name="description" content="Dozex is a free menu bar app for macOS that keeps your Mac awake while Claude Code is working, then lets it sleep the moment every task is done.">
+<meta name="description" content="Dozex is a free menu bar app for macOS that keeps your Mac awake while Claude Code, other CLI agents or terminal commands are running, then lets it sleep the moment the work is done.">
 <link rel="canonical" href="https://dozer.shakatec.co.za/">
 <meta property="og:title" content="Dozex for Mac">
 <meta property="og:description" content="Keep your Mac awake while Claude works. Let it sleep when Claude is done.">
@@ -187,7 +187,7 @@
   <div class="wrap">
     <div class="eyebrow">Free menu bar app for macOS</div>
     <h1>Keep your Mac awake<br>while <span>Claude works</span>.</h1>
-    <p class="lead">Dozex keeps your Mac from sleeping while a Claude Code task is running, then lets it rest the moment the work is done. You don't need timers or to remember to turn it off.</p>
+    <p class="lead">Dozex keeps your Mac from sleeping while Claude Code, another CLI agent or any terminal command is running, then lets it rest the moment the work is done. You don't need timers or to remember to turn it off.</p>
     <div class="cta">
       <a class="btn btn-primary" href="https://github.com/sekophungula/Dozex/releases/latest/download/Dozex.dmg">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.16.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.03-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.59-.03-.01-2.42-.93-2.44-3.67zM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.28z"/></svg>
@@ -234,13 +234,13 @@
         <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6M12 19h8"/></svg></div>
         <div class="step-num">Step 1</div>
         <h3>You start a task</h3>
-        <p>Send Claude a prompt in the CLI or the Claude app's Code tab. Dozex notices right away.</p>
+        <p>Prompt Claude, kick off a build, or run Codex or Gemini in your terminal. Dozex notices right away.</p>
       </div>
       <div class="step">
         <div class="step-icon"><svg viewBox="0 0 18 18"><use href="#eye-awake"/></svg></div>
         <div class="step-num">Step 2</div>
         <h3>Your Mac stays up</h3>
-        <p>The menu bar eye opens while Claude works, so long builds and refactors run through without the Mac falling asleep.</p>
+        <p>The menu bar eye opens while the work runs, so long builds and refactors finish without the Mac falling asleep.</p>
       </div>
       <div class="step">
         <div class="step-icon"><svg viewBox="0 0 18 18"><use href="#eye-dozing"/></svg></div>
@@ -265,15 +265,15 @@
       </div>
       <div class="feature">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-        <div><h3>Sleeps as soon as it can</h3><p>There's no fixed timer. When Claude is done, so is Dozex, so your battery and energy settings aren't fighting it.</p></div>
+        <div><h3>Sleeps as soon as it can</h3><p>There's no fixed timer. When the work is done, so is Dozex, and you can get a notification to say so.</p></div>
       </div>
       <div class="feature">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 10h3M8 14h8"/><circle cx="16" cy="10" r="1.5"/></svg>
         <div><h3>Menu bar and Control Center</h3><p>Turn it on or off with one click, or add the Dozex control to Control Center on macOS 26.</p></div>
       </div>
       <div class="feature">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-        <div><h3>Done notifications</h3><p>Optionally get a notification when Claude finishes, so you know when to come back.</p></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/></svg>
+        <div><h3>Watches your terminal too</h3><p>Builds, scripts and CLI agents like Codex, Gemini and Aider keep your Mac awake in any terminal app. Idle agents, editors and <code class="inline">ssh</code> sessions don't.</p></div>
       </div>
       <div class="feature">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
@@ -311,6 +311,10 @@
       <details>
         <summary>Does it work with the Claude desktop app?</summary>
         <p>Yes. Dozex works with the Claude Code CLI and with the Code tab in the Claude desktop app. Both use the same Claude Code hooks.</p>
+      </details>
+      <details>
+        <summary>Does it work with Codex, Gemini CLI or other agents?</summary>
+        <p>Yes. Dozex watches every terminal window and tab, including Terminal, iTerm, Ghostty, Warp, VS Code and tmux panes. A command that's running keeps your Mac awake. Agents such as Codex, Gemini CLI, Aider and OpenCode count only while they're working, so a session left open at the prompt won't stop your Mac from sleeping. You can turn this off with <em>Watch Terminal</em> in the menu.</p>
       </details>
       <details>
         <summary>What happens if I close my MacBook's lid?</summary>
