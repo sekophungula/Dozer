@@ -26,8 +26,10 @@ final class AppState: ObservableObject {
     @Published var watchTerminals: Bool { didSet { persist(); evaluate() } }
     /// Stay awake while watched apps (Final Cut Pro, Blender, Xcode…) are working.
     @Published var watchApps: Bool { didSet { persist(); evaluate() } }
-    /// Stay awake while a big download or upload is running.
-    @Published var watchNetwork: Bool { didSet { persist(); evaluate() } }
+    /// Stay awake while files are transferring: downloads, uploads, network
+    /// shares and copies to or from external drives. (Stored as "watchNetwork",
+    /// its name from before drive copies were added, so the choice carries over.)
+    @Published var watchTransfers: Bool { didSet { persist(); evaluate() } }
     /// Per-app setting, keyed by `WorkApp.id`. Missing = "When busy".
     @Published var appModes: [String: WatchMode] { didSet { persist(); evaluate() } }
     /// Apps the user added themselves.
@@ -76,7 +78,7 @@ final class AppState: ObservableObject {
         useProcessHeuristic = defaults.bool(forKey: "useProcessHeuristic")
         watchTerminals = defaults.bool(forKey: "watchTerminals")
         watchApps = defaults.bool(forKey: "watchApps")
-        watchNetwork = defaults.bool(forKey: "watchNetwork")
+        watchTransfers = defaults.bool(forKey: "watchNetwork")
         appModes = (defaults.dictionary(forKey: "appModes") as? [String: String] ?? [:])
             .compactMapValues(WatchMode.init(rawValue:))
         customApps = defaults.data(forKey: "customApps")
@@ -123,7 +125,7 @@ final class AppState: ObservableObject {
             useProcessHeuristic: useProcessHeuristic,
             watchTerminals: watchTerminals,
             watchedApps: watchApps ? watchList : [],
-            watchNetwork: watchNetwork
+            watchTransfers: watchTransfers
         )
         activity = snapshot
         if snapshot.isWorking { lastActivityAt = Date() }
@@ -141,7 +143,7 @@ final class AppState: ObservableObject {
         } else if !snapshot.busyTerminals.isEmpty {
             reason = "Dozer: a terminal command is still running"
         } else if let transfer = snapshot.transfer {
-            reason = "Dozer: \(transfer.isUpload ? "an upload" : "a download") is still running"
+            reason = "Dozer: a file transfer is still running (\(transfer.title.lowercased()))"
         } else {
             reason = "Dozer: waiting a moment after work finished"
         }
@@ -176,7 +178,7 @@ final class AppState: ObservableObject {
         if let first = activity.busyTerminals.first {
             return first.isAgent ? "\(first.command) is working" : "Terminal is busy"
         }
-        if let transfer = activity.transfer { return transfer.isUpload ? "Uploading" : "Downloading" }
+        if let transfer = activity.transfer { return transfer.title }
         if isClaudeActive { return "Work finished" }
         return "Watching for work"
     }
@@ -210,8 +212,8 @@ final class AppState: ObservableObject {
             parts.append("\(terminalSummary) running in Terminal")
         }
         if let transfer = activity.transfer {
-            let verb = transfer.isUpload ? "uploading" : "downloading"
-            parts.append(parts.isEmpty ? NetworkMonitor.format(transfer.rate) : "\(verb) \(NetworkMonitor.format(transfer.rate))")
+            let rate = TransferMonitor.format(transfer.rate)
+            parts.append(parts.isEmpty ? rate : "\(transfer.title.lowercased()) \(rate)")
         }
         if parts.isEmpty {
             if !enabled {
@@ -383,7 +385,7 @@ final class AppState: ObservableObject {
         defaults.set(useProcessHeuristic, forKey: "useProcessHeuristic")
         defaults.set(watchTerminals, forKey: "watchTerminals")
         defaults.set(watchApps, forKey: "watchApps")
-        defaults.set(watchNetwork, forKey: "watchNetwork")
+        defaults.set(watchTransfers, forKey: "watchNetwork")
         defaults.set(appModes.mapValues(\.rawValue), forKey: "appModes")
         defaults.set(try? JSONEncoder().encode(customApps), forKey: "customApps")
         defaults.set(notifyWhenDone, forKey: "notifyWhenDone")

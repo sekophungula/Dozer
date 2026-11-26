@@ -1,0 +1,29 @@
+<p>File transfers barely use the CPU, so the app check can't see them. Dozer watches how much data is actually moving instead: over your Mac's Wi-Fi and Ethernet, and to and from external drives.</p>
+<h2>What counts</h2>
+<table>
+<thead><tr><th>Transfer</th><th>Examples</th><th>Counts at</th></tr></thead>
+<tbody>
+<tr><td>Downloads</td><td>Big files in Safari, Chrome or Firefox, download managers, game launchers, macOS installers</td><td>250 KB/s or more</td></tr>
+<tr><td>Uploads</td><td>Videos to YouTube or Vimeo, files to Dropbox, WeTransfer or a client's server</td><td>250 KB/s or more</td></tr>
+<tr><td>Syncs &amp; backups</td><td>iCloud Drive, Google Drive, OneDrive, Dropbox, online backups, network shares and NAS drives</td><td>250 KB/s or more</td></tr>
+<tr><td>Drive copies</td><td>Copying to or from an external SSD or hard drive, a USB stick or an SD card, Time Machine backups to a drive</td><td>1 MB/s or more</td></tr>
+</tbody>
+</table>
+<p>A transfer has to keep going for about 15 seconds before it counts, so short bursts don't keep your Mac up. Music streaming, messages, email and small syncs stay well under the thresholds.</p>
+<h2>When it lets go</h2>
+<p>Once the transfer has slowed below the threshold for about 12 seconds, it no longer counts. After the grace period your Mac can sleep.</p>
+<h2>Example: copying footage off an SD card</h2>
+<ol>
+<li>Drag the clips from the card to your Mac or to an external drive in Finder.</li>
+<li>After a few seconds the eye opens and the menu says <b>Copying files</b> with the speed.</li>
+<li>Walk away. When the copy finishes, Dozer lets your Mac sleep.</li>
+</ol>
+<h2>Good to know</h2>
+<ul>
+<li>It works for every app at once, without any permission prompts. It reads the same counters as Activity Monitor's Network and Disk tabs.</li>
+<li>It sees how much data is moving, not which app is moving it, so the menu says <b>Downloading</b>, <b>Uploading</b> or <b>Copying files</b> with the speed.</li>
+<li>Copies between two folders on your Mac's own disk aren't counted: that disk is busy all the time with ordinary work. They're usually over in seconds anyway.</li>
+<li>Plugging in a drive can make macOS index it for a while, which can briefly count as a copy.</li>
+<li>A long video call or a video stream can also count as a download. That's harmless: those apps keep your Mac awake anyway while they play.</li>
+</ul>
+<p>Turn it off with <b>Watch File Transfers</b> in the menu bar panel.</p>

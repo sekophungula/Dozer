@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Downloads &amp; uploads · Dozer Docs</title>
-<meta name="description" content="Big file transfers, cloud syncs and backups.">
-<link rel="canonical" href="https://dozer.shakatec.co.za/docs/downloads/">
+<title>File transfers · Dozer Docs</title>
+<meta name="description" content="Downloads, uploads, syncs and copies to or from external drives.">
+<link rel="canonical" href="https://dozer.shakatec.co.za/docs/file-transfers/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Dozer">
-<meta property="og:title" content="Downloads &amp; uploads · Dozer Docs">
-<meta property="og:description" content="Big file transfers, cloud syncs and backups.">
+<meta property="og:title" content="File transfers · Dozer Docs">
+<meta property="og:description" content="Downloads, uploads, syncs and copies to or from external drives.">
 <meta property="og:image" content="https://dozer.shakatec.co.za/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Dozer: keeps your Mac awake while your work runs">
-<meta property="og:url" content="https://dozer.shakatec.co.za/docs/downloads/">
+<meta property="og:url" content="https://dozer.shakatec.co.za/docs/file-transfers/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://dozer.shakatec.co.za/assets/og.png">
 <meta name="theme-color" content="#08090a">
@@ -72,37 +72,46 @@
   <div class="docs">
     <aside class="docs-side">
       <input class="docs-search" type="search" placeholder="Search docs" aria-label="Search docs" data-docsearch>
-      <nav class="docs-nav"><h4>Start here</h4><a href="/docs/">What is Dozer?</a><a href="/docs/install/">Install</a><a href="/docs/menu-bar/">The menu bar</a><h4>What it watches</h4><a href="/docs/apps/">Apps</a><a href="/docs/downloads/" class="on">Downloads &amp; uploads</a><a href="/docs/terminal/">Terminal &amp; CLI agents</a><a href="/docs/claude-code/">Claude Code</a><h4>Using Dozer</h4><a href="/docs/settings/">Settings</a><a href="/docs/control-center/">Control Center &amp; login</a><a href="/docs/updates/">Updates</a><h4>Help</h4><a href="/docs/troubleshooting/">Troubleshooting</a><a href="/docs/how-it-works/">How it works</a><a href="/docs/build-from-source/">Build from source</a></nav>
+      <nav class="docs-nav"><h4>Start here</h4><a href="/docs/">What is Dozer?</a><a href="/docs/install/">Install</a><a href="/docs/menu-bar/">The menu bar</a><h4>What it watches</h4><a href="/docs/apps/">Apps</a><a href="/docs/file-transfers/" class="on">File transfers</a><a href="/docs/terminal/">Terminal &amp; CLI agents</a><a href="/docs/claude-code/">Claude Code</a><h4>Using Dozer</h4><a href="/docs/settings/">Settings</a><a href="/docs/control-center/">Control Center &amp; login</a><a href="/docs/updates/">Updates</a><h4>Help</h4><a href="/docs/troubleshooting/">Troubleshooting</a><a href="/docs/how-it-works/">How it works</a><a href="/docs/build-from-source/">Build from source</a></nav>
     </aside>
     <article class="docs-body">
       <span class="eyebrow">What it watches</span>
-      <h1>Downloads &amp; uploads</h1>
-      <p class="docs-lead">Big file transfers, cloud syncs and backups.</p>
-      <div class="prose"><p>Downloads and uploads barely use the CPU, so the app check can't see them. Dozer watches how much data your Mac's Wi-Fi and Ethernet are moving instead.</p>
+      <h1>File transfers</h1>
+      <p class="docs-lead">Downloads, uploads, syncs and copies to or from external drives.</p>
+      <div class="prose"><p>File transfers barely use the CPU, so the app check can't see them. Dozer watches how much data is actually moving instead: over your Mac's Wi-Fi and Ethernet, and to and from external drives.</p>
 <h2 id="what-counts">What counts</h2>
-<p>Traffic of <b>250 KB/s or more</b> in either direction, kept up for about 15 seconds. That covers:</p>
-<ul>
-<li>Big downloads in Safari, Chrome, Firefox or any other app, including download managers and game launchers.</li>
-<li>Uploads to YouTube, Vimeo, Dropbox, WeTransfer or a client's server, a common last step after an export.</li>
-<li>iCloud Drive, Google Drive, OneDrive or Dropbox syncing a big folder.</li>
-<li>Online backups.</li>
-</ul>
-<p>Music streaming, messages, email and small syncs are well under the threshold, and short bursts don't count.</p>
+<table>
+<thead><tr><th>Transfer</th><th>Examples</th><th>Counts at</th></tr></thead>
+<tbody>
+<tr><td>Downloads</td><td>Big files in Safari, Chrome or Firefox, download managers, game launchers, macOS installers</td><td>250 KB/s or more</td></tr>
+<tr><td>Uploads</td><td>Videos to YouTube or Vimeo, files to Dropbox, WeTransfer or a client's server</td><td>250 KB/s or more</td></tr>
+<tr><td>Syncs &amp; backups</td><td>iCloud Drive, Google Drive, OneDrive, Dropbox, online backups, network shares and NAS drives</td><td>250 KB/s or more</td></tr>
+<tr><td>Drive copies</td><td>Copying to or from an external SSD or hard drive, a USB stick or an SD card, Time Machine backups to a drive</td><td>1 MB/s or more</td></tr>
+</tbody>
+</table>
+<p>A transfer has to keep going for about 15 seconds before it counts, so short bursts don't keep your Mac up. Music streaming, messages, email and small syncs stay well under the thresholds.</p>
 <h2 id="when-it-lets-go">When it lets go</h2>
 <p>Once the transfer has slowed below the threshold for about 12 seconds, it no longer counts. After the grace period your Mac can sleep.</p>
+<h2 id="example-copying-footage-off-an-sd-card">Example: copying footage off an SD card</h2>
+<ol>
+<li>Drag the clips from the card to your Mac or to an external drive in Finder.</li>
+<li>After a few seconds the eye opens and the menu says <b>Copying files</b> with the speed.</li>
+<li>Walk away. When the copy finishes, Dozer lets your Mac sleep.</li>
+</ol>
 <h2 id="good-to-know">Good to know</h2>
 <ul>
-<li>It works for every app at once, without any permission prompts. It reads the same counters as Activity Monitor's Network tab.</li>
-<li>It sees your Mac's total traffic, not which app is doing it, so the menu says <b>Downloading</b> or <b>Uploading</b> with the speed.</li>
-<li>A long video call or a video stream can also count. That's harmless: those apps keep your Mac awake anyway while they play.</li>
-<li>VPN traffic is counted once, on your real network connection.</li>
+<li>It works for every app at once, without any permission prompts. It reads the same counters as Activity Monitor's Network and Disk tabs.</li>
+<li>It sees how much data is moving, not which app is moving it, so the menu says <b>Downloading</b>, <b>Uploading</b> or <b>Copying files</b> with the speed.</li>
+<li>Copies between two folders on your Mac's own disk aren't counted: that disk is busy all the time with ordinary work. They're usually over in seconds anyway.</li>
+<li>Plugging in a drive can make macOS index it for a while, which can briefly count as a copy.</li>
+<li>A long video call or a video stream can also count as a download. That's harmless: those apps keep your Mac awake anyway while they play.</li>
 </ul>
-<p>Turn it off with <b>Watch downloads</b> in the menu bar panel.</p>
+<p>Turn it off with <b>Watch File Transfers</b> in the menu bar panel.</p>
 </div>
       <div class="pn-row"><a class="pn" href="/docs/apps/"><small>← Previous</small>Apps</a><a class="pn next" href="/docs/terminal/"><small>Next →</small>Terminal &amp; CLI agents</a></div>
-      <a class="edit" href="https://github.com/sekophungula/Dozer/edit/main/website/src/docs/downloads.html" target="_blank" rel="noopener">Edit this page on GitHub →</a>
+      <a class="edit" href="https://github.com/sekophungula/Dozer/edit/main/website/src/docs/file-transfers.html" target="_blank" rel="noopener">Edit this page on GitHub →</a>
     </article>
-    <aside class="docs-toc"><h4>On this page</h4><a href="#what-counts">What counts</a><a href="#when-it-lets-go">When it lets go</a><a href="#good-to-know">Good to know</a></aside>
+    <aside class="docs-toc"><h4>On this page</h4><a href="#what-counts">What counts</a><a href="#when-it-lets-go">When it lets go</a><a href="#example-copying-footage-off-an-sd-card">Example: copying footage off an SD card</a><a href="#good-to-know">Good to know</a></aside>
   </div>
 </main>
 
@@ -114,7 +123,7 @@
       <div><h4>Docs</h4><ul><li><a href="/docs/">What is Dozer?</a></li><li><a href="/docs/install/">Install</a></li><li><a href="/docs/troubleshooting/">Troubleshooting</a></li></ul></div>
       <div><h4>Community</h4><ul><li><a href="https://github.com/sekophungula/Dozer" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/sekophungula/Dozer/issues" target="_blank" rel="noopener">Report an issue</a></li><li><a href="https://github.com/sekophungula/Dozer/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a></li></ul></div>
     </div>
-    <div class="legal"><span>© 2026 <a href="https://shakatec.co.za" target="_blank" rel="noopener">ShakaTec</a>. Not affiliated with Anthropic.</span><span>v1.6.0</span></div>
+    <div class="legal"><span>© 2026 <a href="https://shakatec.co.za" target="_blank" rel="noopener">ShakaTec</a>. Not affiliated with Anthropic.</span><span>v1.7.0</span></div>
   </div>
 </footer>
 

@@ -12,8 +12,8 @@ struct ClaudeActivity: Equatable {
     var busyTerminals: [TerminalMonitor.BusyTerminal] = []
     /// Watched apps that are working, or open when set to "While open" (see `AppMonitor`).
     var busyApps: [AppMonitor.BusyApp] = []
-    /// A download or upload in progress (see `NetworkMonitor`).
-    var transfer: NetworkMonitor.Transfer?
+    /// A download, upload or drive copy in progress (see `TransferMonitor`).
+    var transfer: TransferMonitor.Transfer?
 
     var isClaudeWorking: Bool { activeSessions > 0 || busyProcesses > 0 }
     var isWorking: Bool { isClaudeWorking || !busyTerminals.isEmpty || !busyApps.isEmpty || transfer != nil }
@@ -47,17 +47,17 @@ final class ClaudeMonitor {
 
     private let terminals = TerminalMonitor()
     private let apps = AppMonitor()
-    private let network = NetworkMonitor()
+    private let transfers = TransferMonitor()
     private let tracker = BusyTracker()
 
     func snapshot(
         useProcessHeuristic: Bool,
         watchTerminals: Bool,
         watchedApps: [(app: WorkApp, mode: WatchMode)],
-        watchNetwork: Bool
+        watchTransfers: Bool
     ) -> ClaudeActivity {
         var activity = ClaudeActivity()
-        if watchNetwork { activity.transfer = network.activeTransfer() }
+        if watchTransfers { activity.transfer = transfers.activeTransfer() }
         if watchTerminals { activity.busyTerminals = terminals.busyTerminals() }
         let table = ProcessTable.read()
         activity.busyApps = apps.busyApps(watching: watchedApps, table: table)

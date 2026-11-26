@@ -60,10 +60,10 @@ struct MenuView: View {
             .toggleStyle(.switch)
             .disabled(!state.enabled)
 
-            Toggle(isOn: $state.watchNetwork) {
+            Toggle(isOn: $state.watchTransfers) {
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Watch downloads")
-                    Text("Stay awake while big files download or upload")
+                    Text("Watch File Transfers")
+                    Text("Downloads, uploads and drive copies")
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }

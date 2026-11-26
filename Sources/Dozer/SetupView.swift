@@ -163,8 +163,8 @@ struct SetupView: View {
                     .padding(.leading, 20)
             }
             VStack(alignment: .leading, spacing: 2) {
-                Toggle("Stay awake while files download or upload", isOn: $state.watchNetwork)
-                Text("Covers downloads in any browser, uploads to YouTube, Dropbox or WeTransfer, cloud folders syncing and online backups. Light traffic like music or messages doesn't count, and a transfer has to keep going for about 15 seconds.")
+                Toggle("Stay awake while files transfer", isOn: $state.watchTransfers)
+                Text("Covers downloads and uploads in any app, network shares, cloud folders syncing, online backups, and copies to or from an external drive or SD card. Light traffic like music or messages doesn't count, and a transfer has to keep going for about 15 seconds.")
                     .font(.caption).foregroundStyle(.secondary)
                     .padding(.leading, 20)
             }

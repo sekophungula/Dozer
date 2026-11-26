@@ -19,7 +19,7 @@ OUT = ROOT / "public"
 SITE = "https://dozer.shakatec.co.za"
 REPO = "https://github.com/sekophungula/Dozer"
 DMG = f"{REPO}/releases/latest/download/Dozer.dmg"
-VERSION = "1.6.0"
+VERSION = "1.7.0"
 
 # (path, source fragment, nav key, title, description)
 PAGES = [
@@ -39,7 +39,7 @@ DOCS = [
     ("Start here", "install", "Install", "Download, allow it once, and pick what to watch."),
     ("Start here", "menu-bar", "The menu bar", "What the eye means and what each switch does."),
     ("What it watches", "apps", "Apps", "Final Cut Pro, Premiere, Blender and other apps while they export, render or build."),
-    ("What it watches", "downloads", "Downloads & uploads", "Big file transfers, cloud syncs and backups."),
+    ("What it watches", "file-transfers", "File transfers", "Downloads, uploads, syncs and copies to or from external drives."),
     ("What it watches", "terminal", "Terminal & CLI agents", "Commands and agents running in any terminal."),
     ("What it watches", "claude-code", "Claude Code", "Exact start and stop through Claude Code hooks."),
     ("Using Dozer", "settings", "Settings", "Keep-awake, display, grace period and notifications."),
