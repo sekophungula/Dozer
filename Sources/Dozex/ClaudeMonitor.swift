@@ -10,9 +10,11 @@ struct ClaudeActivity: Equatable {
     var runningProcesses: Int = 0
     /// Terminals with a command or busy CLI agent running (see `TerminalMonitor`).
     var busyTerminals: [TerminalMonitor.BusyTerminal] = []
+    /// Watched apps that are working, or open when set to "While open" (see `AppMonitor`).
+    var busyApps: [AppMonitor.BusyApp] = []
 
     var isClaudeWorking: Bool { activeSessions > 0 || busyProcesses > 0 }
-    var isWorking: Bool { isClaudeWorking || !busyTerminals.isEmpty }
+    var isWorking: Bool { isClaudeWorking || !busyTerminals.isEmpty || !busyApps.isEmpty }
 }
 
 /// Detects whether Claude is working, using two signals:
@@ -20,9 +22,13 @@ struct ClaudeActivity: Equatable {
 /// 1. **Hooks (precise).** Dozex installs Claude Code hooks that drop a
 ///    marker file per session when a prompt is submitted / a tool runs, and
 ///    delete it when Claude stops. A marker present = a task in flight.
-/// 2. **Process heuristic (fallback).** Any `claude` CLI process using more
-///    than a little CPU counts as working, which covers sessions that
-///    started before the hooks were installed.
+/// 2. **Process heuristic (fallback).** A `claude` CLI process that keeps
+///    using more than a little CPU counts as working, which covers sessions
+///    that started before the hooks were installed. A quick spike from an
+///    idle session doesn't count (see `BusyTracker`).
+///
+/// It also collects terminal and app activity, so one snapshot answers
+/// "is any work running?".
 final class ClaudeMonitor {
     static let supportDirectory: URL = {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
@@ -38,15 +44,26 @@ final class ClaudeMonitor {
     private let cpuThreshold: Double = 3.0
 
     private let terminals = TerminalMonitor()
+    private let apps = AppMonitor()
+    private let tracker = BusyTracker()
 
-    func snapshot(useProcessHeuristic: Bool, watchTerminals: Bool) -> ClaudeActivity {
+    func snapshot(
+        useProcessHeuristic: Bool,
+        watchTerminals: Bool,
+        watchedApps: [(app: WorkApp, mode: WatchMode)]
+    ) -> ClaudeActivity {
         var activity = ClaudeActivity()
         if watchTerminals { activity.busyTerminals = terminals.busyTerminals() }
-        let processes = claudeProcesses()
+        let table = ProcessTable.read()
+        activity.busyApps = apps.busyApps(watching: watchedApps, table: table)
+
+        // The Claude Code CLI binary is called `claude` (lowercase). The
+        // Claude desktop app is `Claude` and is deliberately not counted.
+        let processes = table.entries.values.filter { $0.name == "claude" }
         activity.runningProcesses = processes.count
-        if useProcessHeuristic {
-            activity.busyProcesses = processes.filter { $0.cpu >= cpuThreshold }.count
-        }
+        let readings = Dictionary(uniqueKeysWithValues: processes.map { ("\($0.pid)", $0.cpu >= cpuThreshold) })
+        let busy = tracker.update(useProcessHeuristic ? readings : [:])
+        activity.busyProcesses = busy.count
         activity.activeSessions = activeSessionCount(anyClaudeAlive: !processes.isEmpty)
         return activity
     }
@@ -72,37 +89,5 @@ final class ClaudeMonitor {
             count += 1
         }
         return count
-    }
-
-    private struct ProcessInfoLite { let pid: Int32; let cpu: Double }
-
-    /// Lists `claude` CLI processes with their recent CPU usage via `ps`.
-    private func claudeProcesses() -> [ProcessInfoLite] {
-        let task = Process()
-        task.executableURL = URL(fileURLWithPath: "/bin/ps")
-        task.arguments = ["-Ao", "pid=,pcpu=,comm="]
-        let pipe = Pipe()
-        task.standardOutput = pipe
-        task.standardError = FileHandle.nullDevice
-        do { try task.run() } catch { return [] }
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        task.waitUntilExit()
-        guard let output = String(data: data, encoding: .utf8) else { return [] }
-
-        var result: [ProcessInfoLite] = []
-        for line in output.split(separator: "\n") {
-            let parts = line.split(separator: " ", maxSplits: 2, omittingEmptySubsequences: true)
-            guard parts.count == 3,
-                  let pid = Int32(parts[0]),
-                  let cpu = Double(parts[1].replacingOccurrences(of: ",", with: "."))
-            else { continue }
-            let name = (String(parts[2]) as NSString).lastPathComponent
-            // The Claude Code CLI binary is called `claude` (lowercase). The
-            // Claude desktop app is `Claude` and is deliberately not counted.
-            if name == "claude" {
-                result.append(ProcessInfoLite(pid: pid, cpu: cpu))
-            }
-        }
-        return result
     }
 }

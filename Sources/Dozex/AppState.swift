@@ -1,4 +1,5 @@
 import AppKit
+import UniformTypeIdentifiers
 import Combine
 import ServiceManagement
 import SwiftUI
@@ -13,7 +14,7 @@ final class AppState: ObservableObject {
 
     // MARK: Settings (persisted)
 
-    /// The main toggle. On = keep the Mac awake while Claude is working.
+    /// The main toggle. On = keep the Mac awake while work is running.
     @Published var enabled: Bool { didSet { persist(); evaluate(); syncControl() } }
     /// Keep awake no matter what Claude is doing.
     @Published var forceAwake: Bool { didSet { persist(); evaluate() } }
@@ -23,6 +24,12 @@ final class AppState: ObservableObject {
     @Published var useProcessHeuristic: Bool { didSet { persist(); evaluate() } }
     /// Stay awake while a command or CLI agent is running in any terminal.
     @Published var watchTerminals: Bool { didSet { persist(); evaluate() } }
+    /// Stay awake while watched apps (Final Cut Pro, Blender, Xcode…) are working.
+    @Published var watchApps: Bool { didSet { persist(); evaluate() } }
+    /// Per-app setting, keyed by `WorkApp.id`. Missing = "When busy".
+    @Published var appModes: [String: WatchMode] { didSet { persist(); evaluate() } }
+    /// Apps the user added themselves.
+    @Published var customApps: [WorkApp] { didSet { persist(); evaluate() } }
     /// Post a notification when Claude finishes and sleep is allowed again.
     @Published var notifyWhenDone: Bool { didSet { persist(); if notifyWhenDone { requestNotificationPermission() } } }
     /// Seconds to stay awake after the last sign of Claude activity.
@@ -38,6 +45,8 @@ final class AppState: ObservableObject {
     @Published private(set) var hooksInstalled = false
     @Published var lastError: String?
     @Published private(set) var launchAtLogin = false
+    /// Known apps found on this Mac, for the settings list.
+    @Published private(set) var installedApps: [WorkApp] = []
 
     private let monitor = ClaudeMonitor()
     private let assertion = PowerAssertion()
@@ -53,6 +62,7 @@ final class AppState: ObservableObject {
             "keepDisplayAwake": false,
             "useProcessHeuristic": true,
             "watchTerminals": true,
+            "watchApps": true,
             "notifyWhenDone": true,
             "graceSeconds": 60.0,
             "hasCompletedSetup": false,
@@ -62,6 +72,11 @@ final class AppState: ObservableObject {
         keepDisplayAwake = defaults.bool(forKey: "keepDisplayAwake")
         useProcessHeuristic = defaults.bool(forKey: "useProcessHeuristic")
         watchTerminals = defaults.bool(forKey: "watchTerminals")
+        watchApps = defaults.bool(forKey: "watchApps")
+        appModes = (defaults.dictionary(forKey: "appModes") as? [String: String] ?? [:])
+            .compactMapValues(WatchMode.init(rawValue:))
+        customApps = defaults.data(forKey: "customApps")
+            .flatMap { try? JSONDecoder().decode([WorkApp].self, from: $0) } ?? []
         notifyWhenDone = defaults.bool(forKey: "notifyWhenDone")
         graceSeconds = defaults.double(forKey: "graceSeconds")
         hasCompletedSetup = defaults.bool(forKey: "hasCompletedSetup")
@@ -72,6 +87,7 @@ final class AppState: ObservableObject {
 
     func start() {
         refreshHookStatus()
+        refreshInstalledApps()
         refreshLaunchAtLogin()
         listenForControlCenter()
         evaluate()
@@ -99,18 +115,29 @@ final class AppState: ObservableObject {
 
     func evaluate() {
         guard !loading else { return }
-        let snapshot = monitor.snapshot(useProcessHeuristic: useProcessHeuristic, watchTerminals: watchTerminals)
+        let snapshot = monitor.snapshot(
+            useProcessHeuristic: useProcessHeuristic,
+            watchTerminals: watchTerminals,
+            watchedApps: watchApps ? watchList : []
+        )
         activity = snapshot
         if snapshot.isWorking { lastActivityAt = Date() }
 
         let claudeActive = isClaudeActive
         let shouldHold = enabled && (forceAwake || claudeActive)
 
-        let reason = forceAwake
-            ? "Dozex: keep awake is on"
-            : snapshot.isClaudeWorking || snapshot.busyTerminals.isEmpty
-                ? "Dozex: Claude is still working"
-                : "Dozex: a terminal command is still running"
+        let reason: String
+        if forceAwake {
+            reason = "Dozex: keep awake is on"
+        } else if snapshot.isClaudeWorking {
+            reason = "Dozex: Claude is still working"
+        } else if let app = snapshot.busyApps.first {
+            reason = "Dozex: \(app.name) is \(app.openOnly ? "open" : "still working")"
+        } else if !snapshot.busyTerminals.isEmpty {
+            reason = "Dozex: a terminal command is still running"
+        } else {
+            reason = "Dozex: waiting a moment after work finished"
+        }
         assertion.update(holdSystem: shouldHold, holdDisplay: keepDisplayAwake, reason: reason)
 
         if shouldHold != isHoldingAwake {
@@ -136,11 +163,20 @@ final class AppState: ObservableObject {
         if !enabled { return "Dozex is off" }
         if forceAwake { return "Staying awake" }
         if activity.isClaudeWorking { return "Claude is working" }
+        if let app = activity.busyApps.first {
+            return app.openOnly ? "\(app.name) is open" : "\(app.name) is working"
+        }
         if let first = activity.busyTerminals.first {
             return first.isAgent ? "\(first.command) is working" : "Terminal is busy"
         }
         if isClaudeActive { return "Work finished" }
-        return watchTerminals ? "Watching Claude and Terminal" : "Watching for Claude"
+        return "Watching for work"
+    }
+
+    /// "Final Cut Pro, HandBrake" — watched apps that are working or open.
+    private var appSummary: String {
+        let names = activity.busyApps.map(\.name)
+        return names.prefix(2).joined(separator: ", ") + (names.count > 2 ? " +\(names.count - 2)" : "")
     }
 
     /// "npm, codex" — what's running in terminals, deduplicated.
@@ -157,6 +193,10 @@ final class AppState: ObservableObject {
         }
         if activity.busyProcesses > 0, activity.activeSessions == 0 {
             parts.append("\(activity.busyProcesses) busy claude process\(activity.busyProcesses == 1 ? "" : "es")")
+        }
+        if !activity.busyApps.isEmpty {
+            let allOpen = activity.busyApps.allSatisfy(\.openOnly)
+            parts.append("\(appSummary) \(allOpen ? "open" : "working")")
         }
         if !activity.busyTerminals.isEmpty {
             parts.append("\(terminalSummary) running in Terminal")
@@ -185,6 +225,51 @@ final class AppState: ObservableObject {
         formatter.maximumUnitCount = 1
         formatter.allowedUnits = seconds < 60 ? [.second] : [.hour, .minute]
         return formatter.string(from: seconds) ?? ""
+    }
+
+    // MARK: Watched apps
+
+    /// Every app Dozex could watch, with its setting: the known apps plus
+    /// the ones the user added.
+    var watchList: [(app: WorkApp, mode: WatchMode)] {
+        (AppMonitor.catalog + customApps).map { ($0, appModes[$0.id] ?? .whenBusy) }
+    }
+
+    /// The rows for the settings list: known apps that are installed, then added ones.
+    var appRows: [WorkApp] { installedApps + customApps }
+
+    func mode(for app: WorkApp) -> WatchMode { appModes[app.id] ?? .whenBusy }
+
+    func setMode(_ mode: WatchMode, for app: WorkApp) { appModes[app.id] = mode }
+
+    func refreshInstalledApps() { installedApps = AppMonitor.scanInstalled() }
+
+    /// Asks for an app in /Applications and starts watching it.
+    func addCustomApp() {
+        let panel = NSOpenPanel()
+        panel.title = "Choose an app for Dozex to watch"
+        panel.prompt = "Watch"
+        panel.directoryURL = URL(fileURLWithPath: "/Applications")
+        panel.allowedContentTypes = [.applicationBundle]
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = true
+        guard panel.runModal() == .OK else { return }
+        for url in panel.urls {
+            guard let app = AppMonitor.customApp(at: url) else { continue }
+            if appRows.contains(where: { $0.id == app.id || $0.matches(bundleID: app.id) }) {
+                // Already listed: just make sure it's on.
+                if let existing = appRows.first(where: { $0.matches(bundleID: app.id) }), mode(for: existing) == .off {
+                    setMode(.whenBusy, for: existing)
+                }
+                continue
+            }
+            customApps.append(app)
+        }
+    }
+
+    func removeCustomApp(_ app: WorkApp) {
+        customApps.removeAll { $0.id == app.id }
+        appModes[app.id] = nil
     }
 
     // MARK: Hooks
@@ -270,8 +355,8 @@ final class AppState: ObservableObject {
         let content = UNMutableNotificationContent()
         content.title = "All done"
         content.body = forceAwake
-            ? "Claude and your terminal commands have finished. Keep-awake is still on."
-            : "Claude and your terminal commands have finished, so your Mac can sleep again."
+            ? "Everything Dozex was watching has finished. Keep-awake is still on."
+            : "Everything Dozex was watching has finished, so your Mac can sleep again."
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request)
     }
@@ -285,6 +370,9 @@ final class AppState: ObservableObject {
         defaults.set(keepDisplayAwake, forKey: "keepDisplayAwake")
         defaults.set(useProcessHeuristic, forKey: "useProcessHeuristic")
         defaults.set(watchTerminals, forKey: "watchTerminals")
+        defaults.set(watchApps, forKey: "watchApps")
+        defaults.set(appModes.mapValues(\.rawValue), forKey: "appModes")
+        defaults.set(try? JSONEncoder().encode(customApps), forKey: "customApps")
         defaults.set(notifyWhenDone, forKey: "notifyWhenDone")
         defaults.set(graceSeconds, forKey: "graceSeconds")
         defaults.set(hasCompletedSetup, forKey: "hasCompletedSetup")

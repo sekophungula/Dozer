@@ -10,12 +10,14 @@ import Foundation
 ///   for as long as it runs.
 /// - **Interactive programs** (CLI agents like `claude`, `codex`, `gemini`,
 ///   `aider`; editors, pagers, `ssh`, `tmux`, REPLs) sit open for hours while
-///   idle, so they count only while they're actually using CPU.
+///   idle, so they count only while they keep using CPU. A quick spike
+///   (an idle agent redrawing its screen) doesn't count; see `BusyTracker`.
 /// - **A shell prompt** means nothing is running.
 final class TerminalMonitor {
     /// CPU % (summed over the terminal's processes) that counts as busy for
     /// interactive programs. An idle agent waiting for input sits near 0–1 %.
     private let cpuThreshold: Double = 3.0
+    private let tracker = BusyTracker()
 
     static let shells: Set<String> = [
         "zsh", "bash", "sh", "fish", "dash", "tcsh", "csh", "ksh", "nu", "xonsh", "elvish", "pwsh", "login",
@@ -50,8 +52,21 @@ final class TerminalMonitor {
             byTTY[p.tty, default: []].append(p)
         }
         var result: [BusyTerminal] = []
-        for (_, procs) in byTTY {
-            if let busy = Self.classify(procs, cpuThreshold: cpuThreshold) { result.append(busy) }
+        var readings: [String: Bool] = [:]
+        var gated: [String: BusyTerminal] = [:]
+        for (tty, procs) in byTTY {
+            guard let reading = Self.classify(procs, cpuThreshold: cpuThreshold) else { continue }
+            if reading.cpuGated {
+                // Key by tty and program, so a new program in the same tab starts fresh.
+                let key = "\(tty) \(reading.terminal.command)"
+                readings[key] = reading.hot
+                gated[key] = reading.terminal
+            } else {
+                result.append(reading.terminal)
+            }
+        }
+        for key in tracker.update(readings) {
+            if let terminal = gated[key] { result.append(terminal) }
         }
         return result.sorted { $0.command < $1.command }
     }
@@ -95,8 +110,17 @@ final class TerminalMonitor {
         return .command(name)
     }
 
-    /// Decides whether one terminal is busy, from all processes attached to it.
-    static func classify(_ procs: [Proc], cpuThreshold: Double) -> BusyTerminal? {
+    struct Reading {
+        let terminal: BusyTerminal
+        /// An agent or editor: busy only if it keeps using CPU across readings.
+        let cpuGated: Bool
+        /// For gated programs: above the CPU threshold right now.
+        let hot: Bool
+    }
+
+    /// Reads what one terminal is doing, from all processes attached to it.
+    /// Nil means it's sitting at a shell prompt.
+    static func classify(_ procs: [Proc], cpuThreshold: Double) -> Reading? {
         let foreground = procs.filter(\.isForeground)
         var firstCommand: String?
         var interactiveName: String?
@@ -112,9 +136,12 @@ final class TerminalMonitor {
         // An agent or editor in front: busy only while it (or what it started) uses CPU.
         if let name = agentName ?? interactiveName {
             let cpu = procs.filter { kind(of: $0).isNotShell }.reduce(0) { $0 + $1.cpu }
-            return cpu >= cpuThreshold ? BusyTerminal(command: name, isAgent: agentName != nil) : nil
+            return Reading(terminal: BusyTerminal(command: name, isAgent: agentName != nil),
+                           cpuGated: true, hot: cpu >= cpuThreshold)
         }
-        if let name = firstCommand { return BusyTerminal(command: name, isAgent: false) }
+        if let name = firstCommand {
+            return Reading(terminal: BusyTerminal(command: name, isAgent: false), cpuGated: false, hot: true)
+        }
         return nil
     }
 

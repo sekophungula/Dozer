@@ -1,3 +1,4 @@
+import UniformTypeIdentifiers
 import SwiftUI
 
 /// The in-app landing page: what Dozex does and how to set it up.
@@ -10,15 +11,17 @@ struct SetupView: View {
             VStack(spacing: 28) {
                 hero
                 VStack(spacing: 14) {
-                    StepCard(number: 1, title: "Connect Claude Code",
-                             done: state.hooksInstalled) { connectStep }
+                    StepCard(number: 1, title: "Pick the apps to watch",
+                             done: state.watchApps) { appsStep }
                     StepCard(number: 2, title: "Choose how Dozex behaves",
                              done: true) { optionsStep }
-                    StepCard(number: 3, title: "Put the toggle where you want it",
+                    StepCard(number: 3, title: "Connect Claude Code (optional)",
+                             done: state.hooksInstalled) { connectStep }
+                    StepCard(number: 4, title: "Put the toggle where you want it",
                              done: true) { toggleStep }
-                    StepCard(number: 4, title: "Start with your Mac",
+                    StepCard(number: 5, title: "Start with your Mac",
                              done: state.launchAtLogin) { loginStep }
-                    StepCard(number: 5, title: "Stay up to date",
+                    StepCard(number: 6, title: "Stay up to date",
                              done: updater.status == .upToDate) { updateStep }
                 }
 
@@ -54,6 +57,7 @@ struct SetupView: View {
         .onAppear {
             state.refreshHookStatus()
             state.refreshLaunchAtLogin()
+            state.refreshInstalledApps()
         }
     }
 
@@ -67,7 +71,7 @@ struct SetupView: View {
                 .shadow(color: .black.opacity(0.2), radius: 12, y: 6)
             Text("Dozex")
                 .font(.system(size: 34, weight: .bold, design: .rounded))
-            Text("Your Mac stays awake while Claude works,\nthen sleeps the moment every task is done.")
+            Text("Your Mac stays awake while exports, renders, builds\nand AI agents run, then sleeps the moment they're done.")
                 .font(.title3)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
@@ -83,9 +87,48 @@ struct SetupView: View {
 
     // MARK: Steps
 
+    private var appsStep: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Toggle("Stay awake while these apps are working", isOn: $state.watchApps)
+                .toggleStyle(.switch)
+            Text("No need to change your sleep settings or leave a video playing. Dozex notices when an app is busy, like Final Cut Pro exporting or Blender rendering, keeps your Mac awake until it finishes, then lets it sleep. Choose **While open** to stay awake the whole time an app is open.")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            VStack(spacing: 0) {
+                if state.appRows.isEmpty {
+                    Text("None of the usual export and render apps are installed. Add the apps you use below.")
+                        .font(.callout).foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(10)
+                }
+                ForEach(Array(state.appRows.enumerated()), id: \.element.id) { index, app in
+                    if index > 0 { Divider() }
+                    AppRow(app: app)
+                }
+            }
+            .background(.background.opacity(0.5), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(.quaternary))
+            .disabled(!state.watchApps)
+            .opacity(state.watchApps ? 1 : 0.5)
+
+            Button {
+                state.addCustomApp()
+            } label: {
+                Label("Add an app…", systemImage: "plus")
+            }
+            .disabled(!state.watchApps)
+            Text("An app counts as busy once it has been working hard for about 15 seconds, so opening it or clicking around doesn't keep your Mac up.")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
     private var connectStep: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Dozex adds small hooks to Claude Code (`~/.claude/settings.json`) so it knows exactly when a task starts and when Claude stops. Your existing settings are kept and backed up first. Works for the Claude Code CLI and the Code tab in the Claude app.")
+            Text("If you use Claude Code, Dozex adds small hooks to Claude Code (`~/.claude/settings.json`) so it knows exactly when a task starts and when Claude stops. Your existing settings are kept and backed up first. Works for the Claude Code CLI and the Code tab in the Claude app.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -110,12 +153,12 @@ struct SetupView: View {
 
     private var optionsStep: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Toggle("Dozex is on (stay awake while Claude works)", isOn: $state.enabled)
+            Toggle("Dozex is on (stay awake while work is running)", isOn: $state.enabled)
             Toggle("Keep the display on too, not just the computer", isOn: $state.keepDisplayAwake)
             Toggle("Also treat busy `claude` processes as work", isOn: $state.useProcessHeuristic)
             VStack(alignment: .leading, spacing: 2) {
                 Toggle("Stay awake while anything runs in a terminal", isOn: $state.watchTerminals)
-                Text("Covers builds, scripts and CLI agents like Codex, Gemini and Aider in Terminal, iTerm, Ghostty, VS Code and others. Agents, editors and `ssh` only count while they're busy, so an idle session doesn't keep your Mac up.")
+                Text("Covers builds, scripts and CLI agents like Codex, Gemini and Aider in Terminal, iTerm, Ghostty, VS Code and others. Agents, editors and `ssh` only count while they keep working, so an idle session doesn't keep your Mac up.")
                     .font(.caption).foregroundStyle(.secondary)
                     .padding(.leading, 20)
             }
@@ -208,6 +251,48 @@ struct SetupView: View {
                 .foregroundStyle(.tertiary)
                 .fixedSize(horizontal: false, vertical: true)
         }
+    }
+}
+
+/// One app in the watch list: icon, name and its setting.
+struct AppRow: View {
+    @EnvironmentObject private var state: AppState
+    let app: WorkApp
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(nsImage: icon)
+                .resizable()
+                .frame(width: 22, height: 22)
+            Text(app.name)
+            Spacer()
+            Picker("", selection: Binding(
+                get: { state.mode(for: app) },
+                set: { state.setMode($0, for: app) }
+            )) {
+                ForEach(WatchMode.allCases) { Text($0.label).tag($0) }
+            }
+            .labelsHidden()
+            .frame(width: 120)
+            if app.isCustom {
+                Button {
+                    state.removeCustomApp(app)
+                } label: {
+                    Image(systemName: "minus.circle.fill").foregroundStyle(.secondary)
+                }
+                .buttonStyle(.borderless)
+                .help("Stop watching \(app.name)")
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+    }
+
+    private var icon: NSImage {
+        if let path = app.path, FileManager.default.fileExists(atPath: path) {
+            return NSWorkspace.shared.icon(forFile: path)
+        }
+        return NSWorkspace.shared.icon(for: .applicationBundle)
     }
 }
 

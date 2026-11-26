@@ -34,7 +34,7 @@ struct MenuView: View {
             Toggle(isOn: $state.enabled) {
                 VStack(alignment: .leading, spacing: 1) {
                     Text("Dozex").fontWeight(.semibold)
-                    Text("Stay awake until Claude and Terminal are done")
+                    Text("Stay awake until your work is done")
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }
@@ -43,7 +43,17 @@ struct MenuView: View {
             Toggle(isOn: $state.forceAwake) {
                 VStack(alignment: .leading, spacing: 1) {
                     Text("Keep awake indefinitely")
-                    Text("Ignore Claude and never sleep")
+                    Text("Never sleep, whatever is running")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            .toggleStyle(.switch)
+            .disabled(!state.enabled)
+
+            Toggle(isOn: $state.watchApps) {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Watch apps")
+                    Text("Stay awake while exports and renders run")
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }
