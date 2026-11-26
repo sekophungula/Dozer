@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dozex: keep your Mac awake while your work runs</title>
-<meta name="description" content="Dozex is a free, open-source menu bar app for macOS. It keeps your Mac awake while Final Cut Pro exports, Blender renders, Claude Code works or any terminal command runs, then lets it sleep the moment the work is done.">
+<meta name="description" content="Dozex is a free, open-source menu bar app for macOS. It keeps your Mac awake while Final Cut Pro exports, Blender renders, big files download or upload, Claude Code works or any terminal command runs, then lets it sleep the moment the work is done.">
 <link rel="canonical" href="https://dozer.shakatec.co.za/">
 <meta property="og:title" content="Dozex: keep your Mac awake while your agents work">
 <meta property="og:description" content="Awake while Claude Code, Codex and your terminal are busy. Asleep the moment they're done.">
@@ -283,9 +283,9 @@
 <main id="top">
   <div class="hero">
     <div class="container">
-      <a class="announce" href="#agents"><span class="tag">New</span>Now watches your apps<span class="wide">: Final Cut Pro, Premiere, Blender and more</span><svg><use href="#i-arrow"/></svg></a>
+      <a class="announce" href="#agents"><span class="tag">New</span>Now watches downloads and uploads<span class="wide">, plus apps like Final Cut Pro and Blender</span><svg><use href="#i-arrow"/></svg></a>
       <h1 class="display">Your Mac stays up<br class="wide"> while your work runs</h1>
-      <p class="lead">Dozex keeps your Mac awake while a video exports, a scene renders, an agent codes or a build runs, then lets it sleep the moment the work is done. No timers, no changing sleep settings, no movie playing in the background.</p>
+      <p class="lead">Dozex keeps your Mac awake while a video exports, a scene renders, a big file downloads, an agent codes or a build runs, then lets it sleep the moment the work is done. No timers, no changing sleep settings, no movie playing in the background.</p>
       <div class="cta">
         <a class="btn btn-light btn-lg" href="https://github.com/sekophungula/Dozex/releases/latest/download/Dozex.dmg"><svg><use href="#i-dl"/></svg>Download for Mac</a>
         <a class="btn btn-dark btn-lg" href="https://github.com/sekophungula/Dozex" target="_blank" rel="noopener"><svg><use href="#i-gh"/></svg>View on GitHub</a>
@@ -342,7 +342,7 @@
   <div class="container">
     <div class="highlights">
       <div class="hl"><svg><use href="#eye-awake"/></svg><div><h3>Awake only while it matters</h3><p>Holds off sleep while work is running and gives it back the second it stops.</p></div></div>
-      <div class="hl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M7 9l3 3-3 3M13 15h4"/></svg><div><h3>Apps, agents and terminals</h3><p>Exports in Final Cut Pro and Premiere, renders in Blender, Claude Code, and every terminal tab.</p></div></div>
+      <div class="hl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M7 9l3 3-3 3M13 15h4"/></svg><div><h3>Apps, agents and terminals</h3><p>Exports in Final Cut Pro and Premiere, renders in Blender, downloads and uploads, Claude Code, and every terminal tab.</p></div></div>
       <div class="hl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg><div><h3>Local and open source</h3><p>Runs entirely on your Mac. No account, no analytics, MIT licensed.</p></div></div>
     </div>
   </div>
@@ -364,7 +364,7 @@
 <span class="c-dim">❯</span> cargo build --release
 <span class="c-dim">   Compiling</span> server v0.4.2</pre></div>
           </div>
-          <div class="card-copy"><h3>You start the work</h3><p>Export a video, render a scene, prompt Claude or kick off a build. Dozex picks it up within seconds.</p></div>
+          <div class="card-copy"><h3>You start the work</h3><p>Export a video, start a big download, prompt Claude or kick off a build. Dozex picks it up within seconds.</p></div>
         </div>
         <div class="card">
           <div class="card-art">
@@ -399,6 +399,7 @@
         <span class="chip"><i></i>After Effects</span><span class="chip"><i></i>DaVinci Resolve</span><span class="chip"><i></i>HandBrake</span><span class="chip"><i></i>iMovie</span>
         <span class="chip"><i></i>Logic Pro</span><span class="chip"><i></i>Ableton Live</span><span class="chip"><i></i>Blender</span><span class="chip"><i></i>Cinema 4D</span>
         <span class="chip"><i></i>Lightroom</span><span class="chip"><i></i>Photoshop</span><span class="chip"><i></i>Unity</span><span class="chip"><i></i>Xcode</span>
+        <span class="chip"><i></i>Downloads in any browser</span><span class="chip"><i></i>Uploads to YouTube · Dropbox</span><span class="chip"><i></i>iCloud · Google Drive sync</span>
         <span class="chip"><i></i>Claude Code</span><span class="chip"><i></i>Codex</span><span class="chip"><i></i>Gemini CLI</span><span class="chip"><i></i>Aider</span>
         <span class="chip"><i></i>OpenCode</span><span class="chip"><i></i>Cursor Agent</span><span class="chip"><i></i>Amp</span><span class="chip"><i></i>Goose</span>
         <span class="chip"><i></i>Qwen Code</span><span class="chip"><i></i>Crush</span><span class="chip"><i></i>Droid</span><span class="chip"><i></i>Copilot CLI</span>
@@ -425,6 +426,7 @@
             <tr><td>Stays awake exactly as long as the work runs</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">You guess</td></tr>
             <tr><td>Lets your Mac sleep the moment work ends</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">When the timer runs out</td></tr>
             <tr><td>Knows when an export or render is running</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">—</td></tr>
+            <tr><td>Waits for big downloads and uploads to finish</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">—</td></tr>
             <tr><td>Knows when Claude Code starts and stops</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">—</td></tr>
             <tr><td>Watches every terminal tab and CLI agent</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">—</td></tr>
             <tr><td>Ignores idle apps, agents and ssh sessions</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">—</td></tr>
@@ -463,6 +465,8 @@
       <div class="faq">
         <details><summary>Can it keep my Mac awake while Final Cut Pro exports?<svg><use href="#i-chev"/></svg></summary>
           <p>Yes. Dozex notices when Final Cut Pro, Premiere Pro, DaVinci Resolve, Blender, HandBrake and other apps are working hard and keeps your Mac awake until they finish. No need to change your sleep settings or leave a movie playing. Any other app can be added on the setup page, and any app can be set to keep your Mac awake the whole time it's open.</p></details>
+        <details><summary>Will it stop my Mac sleeping during a big download?<svg><use href="#i-chev"/></svg></summary>
+          <p>Yes. Downloads in any browser, uploads to YouTube, Dropbox or WeTransfer, cloud folders syncing and online backups keep your Mac awake until they finish. Light traffic like music or messages doesn't count, and a transfer has to keep going for about 15 seconds before it does.</p></details>
         <details><summary>Which agents and terminals does it work with?<svg><use href="#i-chev"/></svg></summary>
           <p>Claude Code connects through hooks, in both the CLI and the Code tab of the Claude desktop app. Every other agent, including Codex, Gemini CLI, Aider and OpenCode, is detected in any terminal: Terminal, iTerm, Ghostty, Warp, VS Code and tmux panes.</p></details>
         <details><summary>Will an idle app or agent keep my Mac awake all night?<svg><use href="#i-chev"/></svg></summary>

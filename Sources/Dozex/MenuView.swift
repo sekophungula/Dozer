@@ -60,6 +60,16 @@ struct MenuView: View {
             .toggleStyle(.switch)
             .disabled(!state.enabled)
 
+            Toggle(isOn: $state.watchNetwork) {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Watch downloads")
+                    Text("Stay awake while big files download or upload")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            .toggleStyle(.switch)
+            .disabled(!state.enabled)
+
             Toggle(isOn: $state.watchTerminals) {
                 VStack(alignment: .leading, spacing: 1) {
                     Text("Watch Terminal")
