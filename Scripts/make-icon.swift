@@ -1,4 +1,4 @@
-// Renders Dozex's app icon (1024×1024 PNG): a dozing eye on violet.
+// Renders Dozer's app icon (1024×1024 PNG): a dozing eye on violet.
 // Usage: swift make-icon.swift out.png
 import AppKit
 

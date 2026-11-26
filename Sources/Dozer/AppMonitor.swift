@@ -1,6 +1,6 @@
 import AppKit
 
-/// An app Dozex can watch: a known creative/dev app, or one the user added.
+/// An app Dozer can watch: a known creative/dev app, or one the user added.
 struct WorkApp: Codable, Hashable, Identifiable {
     /// Bundle identifier. For known apps it's a prefix, so
     /// "com.adobe.PremierePro" matches "com.adobe.PremierePro.25".

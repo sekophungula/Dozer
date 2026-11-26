@@ -133,17 +133,17 @@ final class AppState: ObservableObject {
 
         let reason: String
         if forceAwake {
-            reason = "Dozex: keep awake is on"
+            reason = "Dozer: keep awake is on"
         } else if snapshot.isClaudeWorking {
-            reason = "Dozex: Claude is still working"
+            reason = "Dozer: Claude is still working"
         } else if let app = snapshot.busyApps.first {
-            reason = "Dozex: \(app.name) is \(app.openOnly ? "open" : "still working")"
+            reason = "Dozer: \(app.name) is \(app.openOnly ? "open" : "still working")"
         } else if !snapshot.busyTerminals.isEmpty {
-            reason = "Dozex: a terminal command is still running"
+            reason = "Dozer: a terminal command is still running"
         } else if let transfer = snapshot.transfer {
-            reason = "Dozex: \(transfer.isUpload ? "an upload" : "a download") is still running"
+            reason = "Dozer: \(transfer.isUpload ? "an upload" : "a download") is still running"
         } else {
-            reason = "Dozex: waiting a moment after work finished"
+            reason = "Dozer: waiting a moment after work finished"
         }
         assertion.update(holdSystem: shouldHold, holdDisplay: keepDisplayAwake, reason: reason)
 
@@ -167,7 +167,7 @@ final class AppState: ObservableObject {
     }
 
     var statusTitle: String {
-        if !enabled { return "Dozex is off" }
+        if !enabled { return "Dozer is off" }
         if forceAwake { return "Staying awake" }
         if activity.isClaudeWorking { return "Claude is working" }
         if let app = activity.busyApps.first {
@@ -241,7 +241,7 @@ final class AppState: ObservableObject {
 
     // MARK: Watched apps
 
-    /// Every app Dozex could watch, with its setting: the known apps plus
+    /// Every app Dozer could watch, with its setting: the known apps plus
     /// the ones the user added.
     var watchList: [(app: WorkApp, mode: WatchMode)] {
         (AppMonitor.catalog + customApps).map { ($0, appModes[$0.id] ?? .whenBusy) }
@@ -259,7 +259,7 @@ final class AppState: ObservableObject {
     /// Asks for an app in /Applications and starts watching it.
     func addCustomApp() {
         let panel = NSOpenPanel()
-        panel.title = "Choose an app for Dozex to watch"
+        panel.title = "Choose an app for Dozer to watch"
         panel.prompt = "Watch"
         panel.directoryURL = URL(fileURLWithPath: "/Applications")
         panel.allowedContentTypes = [.applicationBundle]
@@ -319,7 +319,7 @@ final class AppState: ObservableObject {
             if on { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
             lastError = nil
         } catch {
-            lastError = "Couldn't change Login Items: \(error.localizedDescription). Move Dozex to /Applications and try again."
+            lastError = "Couldn't change Login Items: \(error.localizedDescription). Move Dozer to /Applications and try again."
         }
         refreshLaunchAtLogin()
     }
@@ -367,8 +367,8 @@ final class AppState: ObservableObject {
         let content = UNMutableNotificationContent()
         content.title = "All done"
         content.body = forceAwake
-            ? "Everything Dozex was watching has finished. Keep-awake is still on."
-            : "Everything Dozex was watching has finished, so your Mac can sleep again."
+            ? "Everything Dozer was watching has finished. Keep-awake is still on."
+            : "Everything Dozer was watching has finished, so your Mac can sleep again."
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request)
     }

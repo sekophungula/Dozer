@@ -1,6 +1,6 @@
-<p>Claude Code tells Dozex exactly when a task starts and when Claude stops, through hooks. That's more precise than watching CPU, because Claude can spend a while waiting on a reply while barely using the CPU.</p>
+<p>Claude Code tells Dozer exactly when a task starts and when Claude stops, through hooks. That's more precise than watching CPU, because Claude can spend a while waiting on a reply while barely using the CPU.</p>
 <h2>Connect</h2>
-<p>On the setup page, click <b>Connect Claude Code</b>. Dozex adds hooks to <code>~/.claude/settings.json</code>:</p>
+<p>On the setup page, click <b>Connect Claude Code</b>. Dozer adds hooks to <code>~/.claude/settings.json</code>:</p>
 <table>
 <thead><tr><th>Hook</th><th>What it does</th></tr></thead>
 <tbody>
@@ -10,6 +10,6 @@
 </table>
 <p>Your existing settings are kept, and a copy is saved as <code>~/.claude/settings.json.sleepable-backup</code> first. It works for the Claude Code CLI and for the Code tab in the Claude desktop app.</p>
 <h2>Sessions that were already running</h2>
-<p>Sessions started before you connected pick up the hooks on their next prompt. Until then, Dozex falls back to watching <code>claude</code> processes that keep using CPU.</p>
+<p>Sessions started before you connected pick up the hooks on their next prompt. Until then, Dozer falls back to watching <code>claude</code> processes that keep using CPU.</p>
 <h2>Disconnect</h2>
 <p>Click <b>Disconnect</b> on the setup page to remove the hooks.</p>

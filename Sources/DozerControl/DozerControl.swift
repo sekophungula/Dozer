@@ -2,24 +2,24 @@ import AppIntents
 import SwiftUI
 import WidgetKit
 
-/// Control Center / menu bar control for Dozex (macOS 26+).
+/// Control Center / menu bar control for Dozer (macOS 26+).
 @main
-struct DozexControlBundle: WidgetBundle {
+struct DozerControlBundle: WidgetBundle {
     var body: some Widget {
-        DozexToggleControl()
+        DozerToggleControl()
     }
 }
 
-struct DozexToggleControl: ControlWidget {
+struct DozerToggleControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: SharedState.controlKind, provider: Provider()) { isOn in
-            ControlWidgetToggle("Dozex", isOn: isOn, action: SetDozexIntent()) { on in
+            ControlWidgetToggle("Dozer", isOn: isOn, action: SetDozerIntent()) { on in
                 Label(on ? "Awake for Claude" : "Off",
                       systemImage: on ? "eye" : "moon.zzz")
             }
             .tint(.orange)
         }
-        .displayName("Dozex")
+        .displayName("Dozer")
         .description("Keep your Mac awake until all Claude tasks are done.")
     }
 
@@ -32,11 +32,11 @@ struct DozexToggleControl: ControlWidget {
     }
 }
 
-struct SetDozexIntent: SetValueIntent {
-    static let title: LocalizedStringResource = "Set Dozex"
-    static let description = IntentDescription("Turn Dozex on or off.")
+struct SetDozerIntent: SetValueIntent {
+    static let title: LocalizedStringResource = "Set Dozer"
+    static let description = IntentDescription("Turn Dozer on or off.")
 
-    @Parameter(title: "Dozex is on")
+    @Parameter(title: "Dozer is on")
     var value: Bool
 
     init() {}

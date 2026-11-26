@@ -1,7 +1,7 @@
 import UniformTypeIdentifiers
 import SwiftUI
 
-/// The in-app landing page: what Dozex does and how to set it up.
+/// The in-app landing page: what Dozer does and how to set it up.
 struct SetupView: View {
     @EnvironmentObject private var state: AppState
     @EnvironmentObject private var updater: Updater
@@ -13,7 +13,7 @@ struct SetupView: View {
                 VStack(spacing: 14) {
                     StepCard(number: 1, title: "Pick the apps to watch",
                              done: state.watchApps) { appsStep }
-                    StepCard(number: 2, title: "Choose how Dozex behaves",
+                    StepCard(number: 2, title: "Choose how Dozer behaves",
                              done: true) { optionsStep }
                     StepCard(number: 3, title: "Connect Claude Code (optional)",
                              done: state.hooksInstalled) { connectStep }
@@ -69,7 +69,7 @@ struct SetupView: View {
                 .resizable()
                 .frame(width: 96, height: 96)
                 .shadow(color: .black.opacity(0.2), radius: 12, y: 6)
-            Text("Dozex")
+            Text("Dozer")
                 .font(.system(size: 34, weight: .bold, design: .rounded))
             Text("Your Mac stays awake while exports, renders, builds\nand AI agents run, then sleeps the moment they're done.")
                 .font(.title3)
@@ -91,7 +91,7 @@ struct SetupView: View {
         VStack(alignment: .leading, spacing: 10) {
             Toggle("Stay awake while these apps are working", isOn: $state.watchApps)
                 .toggleStyle(.switch)
-            Text("No need to change your sleep settings or leave a video playing. Dozex notices when an app is busy, like Final Cut Pro exporting or Blender rendering, keeps your Mac awake until it finishes, then lets it sleep. Choose **While open** to stay awake the whole time an app is open.")
+            Text("No need to change your sleep settings or leave a video playing. Dozer notices when an app is busy, like Final Cut Pro exporting or Blender rendering, keeps your Mac awake until it finishes, then lets it sleep. Choose **While open** to stay awake the whole time an app is open.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -128,7 +128,7 @@ struct SetupView: View {
 
     private var connectStep: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("If you use Claude Code, Dozex adds small hooks to Claude Code (`~/.claude/settings.json`) so it knows exactly when a task starts and when Claude stops. Your existing settings are kept and backed up first. Works for the Claude Code CLI and the Code tab in the Claude app.")
+            Text("If you use Claude Code, Dozer adds small hooks to Claude Code (`~/.claude/settings.json`) so it knows exactly when a task starts and when Claude stops. Your existing settings are kept and backed up first. Works for the Claude Code CLI and the Code tab in the Claude app.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -144,7 +144,7 @@ struct SetupView: View {
                     Spacer()
                 }
             }
-            Text("Already-running Claude sessions are picked up on their next prompt. Until then, Dozex also watches for busy `claude` processes.")
+            Text("Already-running Claude sessions are picked up on their next prompt. Until then, Dozer also watches for busy `claude` processes.")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -153,7 +153,7 @@ struct SetupView: View {
 
     private var optionsStep: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Toggle("Dozex is on (stay awake while work is running)", isOn: $state.enabled)
+            Toggle("Dozer is on (stay awake while work is running)", isOn: $state.enabled)
             Toggle("Keep the display on too, not just the computer", isOn: $state.keepDisplayAwake)
             Toggle("Also treat busy `claude` processes as work", isOn: $state.useProcessHeuristic)
             VStack(alignment: .leading, spacing: 2) {
@@ -190,7 +190,7 @@ struct SetupView: View {
                 Text("**Menu bar** — the eye icon at the top of your screen. Hold ⌘ and drag it to reorder.")
             } icon: { Image(systemName: "menubar.rectangle") }
             Label {
-                Text("**Control Center** (macOS 26+) — open Control Center, click **Edit Controls**, search “Dozex” and drag it in. You can also pin it to the menu bar from there.")
+                Text("**Control Center** (macOS 26+) — open Control Center, click **Edit Controls**, search “Dozer” and drag it in. You can also pin it to the menu bar from there.")
             } icon: { Image(systemName: "switch.2") }
             Button("Open Control Center settings") {
                 if let url = URL(string: "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension") {
@@ -218,7 +218,7 @@ struct SetupView: View {
                     Spacer()
                 case .downloading, .installing:
                     ProgressView().controlSize(.small)
-                    Text(updater.status == .downloading ? "Downloading…" : "Installing — Dozex will reopen.")
+                    Text(updater.status == .downloading ? "Downloading…" : "Installing — Dozer will reopen.")
                     Spacer()
                 case .upToDate:
                     Label("You're on the latest version (\(updater.currentVersion)).", systemImage: "checkmark.circle.fill")
@@ -238,7 +238,7 @@ struct SetupView: View {
             .font(.callout)
             Toggle("Check for updates automatically", isOn: $updater.automaticallyChecks)
                 .toggleStyle(.switch)
-            Text("Updates come from this app's GitHub releases and install in place, wherever Dozex lives.")
+            Text("Updates come from this app's GitHub releases and install in place, wherever Dozer lives.")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -247,7 +247,7 @@ struct SetupView: View {
 
     private var loginStep: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Toggle("Open Dozex at login", isOn: Binding(
+            Toggle("Open Dozer at login", isOn: Binding(
                 get: { state.launchAtLogin },
                 set: { state.setLaunchAtLogin($0) }
             ))

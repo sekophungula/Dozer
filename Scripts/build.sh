@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Builds Dozex.app (universal: Apple Silicon + Intel) without an Xcode project.
-#   Scripts/build.sh            → build/Dozex.app
-#   Scripts/build.sh --package  → also build/Dozex.zip, build/Dozex.dmg and the legacy build/Sleepable.zip
+# Builds Dozer.app (universal: Apple Silicon + Intel) without an Xcode project.
+#   Scripts/build.sh            → build/Dozer.app
+#   Scripts/build.sh --package  → also build/Dozer.zip, build/Dozer.dmg and the legacy
+#                                 build/Dozex.zip and build/Sleepable.zip
 set -euo pipefail
 
 VERSION="${VERSION:-1.0.0}"
@@ -9,32 +10,32 @@ BUILD_NUMBER="${BUILD_NUMBER:-1}"
 SIGN_IDENTITY="${SIGN_IDENTITY:--}"   # "-" = ad-hoc
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/build"
-APP="$OUT/Dozex.app"
-APPEX="$APP/Contents/PlugIns/DozexControl.appex"
+APP="$OUT/Dozer.app"
+APPEX="$APP/Contents/PlugIns/DozerControl.appex"
 SDK="$(xcrun --sdk macosx --show-sdk-path)"
 ARCHS=(arm64 x86_64)
 
 rm -rf "$OUT"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$APPEX/Contents/MacOS"
 
-echo "▸ Compiling Dozex"
+echo "▸ Compiling Dozer"
 for arch in "${ARCHS[@]}"; do
   xcrun swiftc -O -swift-version 5 -parse-as-library \
     -target "$arch-apple-macos14.0" -sdk "$SDK" \
-    "$ROOT"/Sources/Dozex/*.swift "$ROOT"/Sources/Shared/*.swift \
-    -o "$OUT/Dozex-$arch"
+    "$ROOT"/Sources/Dozer/*.swift "$ROOT"/Sources/Shared/*.swift \
+    -o "$OUT/Dozer-$arch"
 done
-lipo -create "${ARCHS[@]/#/$OUT/Dozex-}" -output "$APP/Contents/MacOS/Dozex"
+lipo -create "${ARCHS[@]/#/$OUT/Dozer-}" -output "$APP/Contents/MacOS/Dozer"
 
 echo "▸ Compiling Control Center extension"
 for arch in "${ARCHS[@]}"; do
   xcrun swiftc -O -swift-version 5 -parse-as-library -application-extension \
     -target "$arch-apple-macos26.0" -sdk "$SDK" \
-    "$ROOT"/Sources/DozexControl/*.swift "$ROOT"/Sources/Shared/*.swift \
-    -o "$OUT/DozexControl-$arch"
+    "$ROOT"/Sources/DozerControl/*.swift "$ROOT"/Sources/Shared/*.swift \
+    -o "$OUT/DozerControl-$arch"
 done
-lipo -create "${ARCHS[@]/#/$OUT/DozexControl-}" -output "$APPEX/Contents/MacOS/DozexControl"
-rm -f "$OUT"/Dozex-* "$OUT"/DozexControl-*
+lipo -create "${ARCHS[@]/#/$OUT/DozerControl-}" -output "$APPEX/Contents/MacOS/DozerControl"
+rm -f "$OUT"/Dozer-* "$OUT"/DozerControl-*
 
 echo "▸ Assembling bundle"
 sed -e "s/__VERSION__/$VERSION/" -e "s/__BUILD__/$BUILD_NUMBER/" "$ROOT/Resources/Info.plist" > "$APP/Contents/Info.plist"
@@ -60,13 +61,17 @@ codesign --verify --deep --strict "$APP"
 
 if [[ "${1:-}" == "--package" ]]; then
   echo "▸ Packaging"
-  (cd "$OUT" && ditto -c -k --keepParent Dozex.app Dozex.zip)
-  # Sleepable 1.1.0 and older look for Sleepable.zip containing Sleepable.app.
-  # Same app under the old folder name; Dozex renames itself on first launch.
-  LEGACY="$OUT/legacy"
-  mkdir -p "$LEGACY" && ditto "$APP" "$LEGACY/Sleepable.app"
-  (cd "$LEGACY" && ditto -c -k --keepParent Sleepable.app "$OUT/Sleepable.zip")
-  rm -rf "$LEGACY"
+  (cd "$OUT" && ditto -c -k --keepParent Dozer.app Dozer.zip)
+  # Older versions update from a zip under their own name: Sleepable 1.1.0 and
+  # earlier look for Sleepable.zip (Sleepable.app), Dozex 1.2.0–1.5.0 for
+  # Dozex.zip (Dozex.app). Same app inside; it renames itself to Dozer.app on
+  # first launch.
+  for OLD in Sleepable Dozex; do
+    LEGACY="$OUT/legacy-$OLD"
+    mkdir -p "$LEGACY" && ditto "$APP" "$LEGACY/$OLD.app"
+    (cd "$LEGACY" && ditto -c -k --keepParent "$OLD.app" "$OUT/$OLD.zip")
+    rm -rf "$LEGACY"
+  done
   # Installer window: background art + icon layout, via dmgbuild (writes the
   # window settings directly, so no Finder scripting is needed).
   TOOLS="$ROOT/.build-tools"
@@ -77,7 +82,7 @@ if [[ "${1:-}" == "--package" ]]; then
   xcrun swift "$ROOT/Scripts/make-dmg-background.swift" "$OUT" >/dev/null
   tiffutil -cathidpicheck "$OUT/background.png" "$OUT/background@2x.png" -out "$OUT/background.tiff" 2>/dev/null
   "$TOOLS/bin/dmgbuild" -s "$ROOT/Scripts/dmg-settings.py" -D app="$APP" -D background="$OUT/background.tiff" \
-    "Dozex" "$OUT/Dozex.dmg" >/dev/null
+    "Dozer" "$OUT/Dozer.dmg" >/dev/null
   rm -f "$OUT"/background*.png "$OUT/background.tiff"
 fi
 

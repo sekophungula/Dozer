@@ -1,6 +1,6 @@
 import Foundation
 
-/// What Dozex currently knows about Claude.
+/// What Dozer currently knows about Claude.
 struct ClaudeActivity: Equatable {
     /// Claude Code sessions that are mid-task (reported by the hooks).
     var activeSessions: Int = 0
@@ -21,7 +21,7 @@ struct ClaudeActivity: Equatable {
 
 /// Detects whether Claude is working, using two signals:
 ///
-/// 1. **Hooks (precise).** Dozex installs Claude Code hooks that drop a
+/// 1. **Hooks (precise).** Dozer installs Claude Code hooks that drop a
 ///    marker file per session when a prompt is submitted / a tool runs, and
 ///    delete it when Claude stops. A marker present = a task in flight.
 /// 2. **Process heuristic (fallback).** A `claude` CLI process that keeps

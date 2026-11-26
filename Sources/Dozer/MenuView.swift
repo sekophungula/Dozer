@@ -8,7 +8,7 @@ struct MenuView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if case .available(let version) = updater.status {
-                UpdateBanner(text: "Dozex \(version) is available", buttonTitle: "Update") {
+                UpdateBanner(text: "Dozer \(version) is available", buttonTitle: "Update") {
                     Task { await updater.installUpdate() }
                 }
             } else if updater.status == .downloading || updater.status == .installing {
@@ -33,7 +33,7 @@ struct MenuView: View {
 
             Toggle(isOn: $state.enabled) {
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Dozex").fontWeight(.semibold)
+                    Text("Dozer").fontWeight(.semibold)
                     Text("Stay awake until your work is done")
                         .font(.caption).foregroundStyle(.secondary)
                 }

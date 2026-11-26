@@ -1,6 +1,6 @@
-// Renders the background for the Dozex.dmg window (660×400 pt, 1x and 2x).
+// Renders the background for the Dozer.dmg window (660×400 pt, 1x and 2x).
 // Usage: swift make-dmg-background.swift out-dir
-// Icon centres must match Scripts/dmg-settings.py: Dozex (165, 190), Applications (495, 190).
+// Icon centres must match Scripts/dmg-settings.py: Dozer (165, 190), Applications (495, 190).
 import AppKit
 
 let W: CGFloat = 660, H: CGFloat = 400
@@ -41,7 +41,7 @@ func render(scale: CGFloat) -> NSBitmapImageRep {
         c(1, 1, 1, 0.08).setStroke(); plate.lineWidth = 1; plate.stroke()
     }
 
-    // Dashed arrow from Dozex to Applications.
+    // Dashed arrow from Dozer to Applications.
     let arrow = NSBezierPath()
     arrow.move(to: NSPoint(x: 262, y: 190)); arrow.line(to: NSPoint(x: 390, y: 190))
     arrow.lineWidth = 2.5; arrow.lineCapStyle = .round
@@ -58,8 +58,8 @@ func render(scale: CGFloat) -> NSBitmapImageRep {
         let attrs: [NSAttributedString.Key: Any] = [.font: NSFont.systemFont(ofSize: size, weight: weight), .foregroundColor: color, .paragraphStyle: p, .kern: kern]
         NSAttributedString(string: s, attributes: attrs).draw(in: NSRect(x: 0, y: y, width: W, height: size * 1.4))
     }
-    text("Install Dozex", size: 22, weight: .semibold, color: c(0.97, 0.97, 0.97), y: 34, kern: -0.4)
-    text("Drag Dozex onto the Applications folder", size: 13, weight: .regular, color: c(0.54, 0.56, 0.60), y: 66)
+    text("Install Dozer", size: 22, weight: .semibold, color: c(0.97, 0.97, 0.97), y: 34, kern: -0.4)
+    text("Drag Dozer onto the Applications folder", size: 13, weight: .regular, color: c(0.54, 0.56, 0.60), y: 66)
     text("Then open it from Applications. The first time, click Open Anyway in System Settings → Privacy & Security.",
          size: 11, weight: .regular, color: c(0.42, 0.44, 0.47), y: 350)
 

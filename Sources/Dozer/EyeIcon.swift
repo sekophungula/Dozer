@@ -1,6 +1,6 @@
 import AppKit
 
-/// Dozex's eye, drawn in code so the menu bar matches the app icon.
+/// Dozer's eye, drawn in code so the menu bar matches the app icon.
 /// - `awake`: half-open eye (keeping the Mac up for Claude)
 /// - `dozing`: closed eye with lashes (watching, Mac may sleep)
 /// - `off`: the closed eye, faded

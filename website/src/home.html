@@ -1,140 +1,217 @@
-  <main class="frame">
-    <section class="hero center">
-      <a class="pill-link" href="/changelog/"><b>New</b>v{{VERSION}} · waits for big downloads and uploads<span>→</span></a>
-      <h1>Your Mac stays up<br /> while <span class="mark">your work runs</span></h1>
-      <p class="lead">Dozex keeps your Mac awake while a video exports, a scene renders, a big file downloads, an agent codes or a build runs — <b>Final Cut Pro, Blender, Claude Code</b>, any terminal — then lets it sleep the moment it's done. No timers, no changing sleep settings, no movie playing in the background.</p>
+<main id="top">
+  <div class="hero">
+    <div class="container">
+      <a class="announce" href="/changelog/"><span class="tag">New</span>Dozex is now Dozer<span class="wide">, and it waits for big downloads</span><svg><use href="#i-arrow"/></svg></a>
+      <h1 class="display">Your Mac stays up<br class="wide"> while your work runs</h1>
+      <p class="lead">Dozer keeps your Mac awake while a video exports, a scene renders, a big file downloads, an agent codes or a build runs, then lets it sleep the moment the work is done. No timers, no changing sleep settings, no movie playing in the background.</p>
       <div class="cta">
-        <a class="btn btn-white" href="{{DMG}}"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 1.43c0 1.14-.47 2.23-1.2 3.02-.79.86-2.07 1.52-3.12 1.44-.13-1.1.42-2.27 1.14-3.03.81-.86 2.18-1.5 3.18-1.43zM20.5 17.1c-.55 1.27-.82 1.84-1.53 2.96-.99 1.56-2.39 3.5-4.12 3.52-1.54.01-1.93-1-4.02-.99-2.09.01-2.52 1.01-4.06 1-1.73-.02-3.05-1.77-4.04-3.33C-.04 15.9-.33 10.79 1.47 8.06c1.28-1.94 3.3-3.08 5.2-3.08 1.93 0 3.15 1.06 4.75 1.06 1.55 0 2.5-1.06 4.73-1.06 1.69 0 3.48.92 4.75 2.5-4.17 2.29-3.5 8.24-.4 9.62z"/></svg>Download for Mac</a>
-        <a class="btn btn-line" href="{{REPO}}">View on GitHub</a>
+        <a class="btn btn-light btn-lg" href="{{DMG}}"><svg><use href="#i-dl"/></svg>Download for Mac</a>
+        <a class="btn btn-dark btn-lg" href="{{REPO}}"><svg><use href="#i-gh"/></svg>View on GitHub</a>
       </div>
-      <p class="fine">Free &amp; open source · Apple Silicon &amp; Intel · macOS 14+ · <a href="/docs/build-from-source/">Build from source</a></p>
-    </section>
+      <p class="fine">Free and open source · macOS 14+ · Apple Silicon &amp; Intel</p>
+    </div>
 
-    <section class="showcase" data-tabs>
-      <div class="tabbar" role="tablist">
-        <button class="on" data-tab="watch" role="tab" aria-selected="true">Watching</button>
-        <button data-tab="menu" role="tab" aria-selected="false">Menu bar</button>
-        <button data-tab="apps" role="tab" aria-selected="false">Apps</button>
-        <button data-tab="terminal" role="tab" aria-selected="false">Terminal &amp; agents</button>
-      </div>
-
-      <div class="console" data-pane="watch">
-        <div class="console-bar">
-          <span>Dozex</span><span class="sep">/</span><span>watching</span>
-          <span class="right"><span class="hide-sm">sleep: held</span><span class="tag run">Awake</span></span>
-        </div>
-        <div class="console-body">
-          <div class="graph">
-            <div class="node src"><span class="ico">FC</span><span class="n">Final Cut Pro</span><span class="tag run">Exporting</span><span class="d">when busy · 4K master, 38 min left</span></div>
-            <div class="node"><span class="ico">↓</span><span class="n">Download</span><span class="tag run">8.4 MB/s</span><span class="d">any browser or app</span></div>
-            <div class="node"><span class="ico">&gt;_</span><span class="n">npm run build</span><span class="tag ok">✓ Done</span><span class="d">Terminal · tab 2</span></div>
-            <div class="node"><span class="ico">⌘</span><span class="n">Claude Code</span><span class="tag ok">✓ Done</span><span class="d">hooks · exact stop</span></div>
-            <div class="node"><span class="ico">CX</span><span class="n">codex</span><span class="tag idle">Idle · ignored</span><span class="d">waiting at its prompt</span></div>
-          </div>
-          <div class="log">
-            <div class="l"><span class="ar">==&gt;</span> <span class="w">21:04 Final Cut Pro busy for 15s</span></div>
-            <div class="l"><span class="ar">==&gt;</span> holding sleep <span class="ar">(display may sleep)</span></div>
-            <div class="l"><span class="ar">==&gt;</span> 21:06 download started · 8.4 MB/s</div>
-            <div class="l"><span class="ar">==&gt;</span> 21:31 npm run build finished <span class="ok">✓</span></div>
-            <div class="l"><span class="ar">==&gt;</span> 21:40 download finished <span class="ok">✓</span></div>
-            <div class="l"><span class="ar">==&gt;</span> 22:12 export finished <span class="ok">✓</span></div>
-            <div class="l"><span class="ar">==&gt;</span> sleep allowed in 1m</div>
-            <div class="l"><span class="ok">==&gt; All done. Your Mac can sleep.</span> <span class="cur"></span></div>
+    <div class="shot" aria-hidden="true">
+      <div class="desk">
+        <div class="menubar">
+          <div class="l"><span>&#63743;</span><b>Final Cut Pro</b><span>File</span><span>Edit</span><span>Mark</span><span>Window</span></div>
+          <div class="r">
+            <span class="mb-eye"><svg><use href="#eye-awake"/></svg></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+            <span>Sun 22 Nov&nbsp; 21:14</span>
           </div>
         </div>
-        <div class="menubar-strip"><span></span><span>Final Cut Pro</span><span>File</span><span>Edit</span><span>Share</span>
-          <span class="r"><img class="eye" src="/assets/logo.svg" alt="Dozex's eye, open while it keeps the Mac awake" /><span>Wed 21:42</span></span></div>
-      </div>
 
-      <div class="console" data-pane="menu" hidden>
-        <div class="console-bar"><span>Dozex · menu bar panel</span><span class="right"><span class="tag ok">✓ Holding sleep</span></span></div>
-        <div class="panel-wrap">
-          <div class="panel" role="img" aria-label="The Dozex menu bar panel while Final Cut Pro exports">
-            <div class="status"><span class="orb"><img src="/assets/logo.svg" alt="" /></span><div><b>Final Cut Pro is working</b><small>Final Cut Pro working · downloading 8.4 MB/s · awake 38m</small></div></div>
-            <div class="row"><div><b>Dozex</b><small>Stay awake until your work is done</small></div><span class="sw on"></span></div>
-            <div class="row"><div><b>Keep awake indefinitely</b><small>Never sleep, whatever is running</small></div><span class="sw"></span></div>
-            <div class="row"><div><b>Watch apps</b><small>Stay awake while exports and renders run</small></div><span class="sw on"></span></div>
-            <div class="row"><div><b>Watch downloads</b><small>Stay awake while big files download or upload</small></div><span class="sw on"></span></div>
-            <div class="row"><div><b>Watch Terminal</b><small>Stay awake while commands and CLI agents run</small></div><span class="sw on"></span></div>
-            <div class="row"><div><b>Keep display on too</b></div><span class="sw"></span></div>
-            <div class="foot-row"><span>Setup…</span><span>Check for Updates</span><span>Quit</span></div>
+        <div class="term">
+          <div class="term-bar">
+            <div class="dots"><i></i><i></i><i></i></div>
+            <div class="tabs"><span class="on"><i class="spin"></i>codex</span><span>npm run build</span><span>zsh</span></div>
           </div>
+<div class="term-body"><span class="c-dim">~/acme</span> <span class="c-acc">❯</span> <span class="c-fg">codex</span>
+<span class="c-acc">›</span> <span class="c-fg">Migrate the billing service to the new SDK and</span>
+  <span class="c-fg">make sure the test suite still passes</span>
+
+<span class="c-ok">✔</span> Read <span class="c-fg">src/billing/client.ts</span>
+<span class="c-ok">✔</span> Updated 14 files
+<span class="c-warm">●</span> Running <span class="c-fg">npm test</span> <span class="c-dim">(412 tests)</span>
+  <span class="c-dim">PASS</span>  billing/invoices.test.ts
+  <span class="c-dim">PASS</span>  billing/refunds.test.ts
+  <span class="c-dim">RUNS</span>  billing/webhooks.test.ts <span class="cursor"></span>
+
+<span class="c-dim">Working · 23m 41s · esc to interrupt</span></div>
+        </div>
+
+        <div class="panel">
+          <div class="p-head">
+            <div class="orb"><svg><use href="#eye-awake"/></svg></div>
+            <div><div class="p-title">Final Cut Pro is working</div><div class="p-sub">Final Cut Pro working · codex running in Terminal · awake 23m</div></div>
+          </div>
+          <div class="p-sep"></div>
+          <div class="p-row"><div>Dozer<small>Stay awake until your work is done</small></div><span class="sw on"></span></div>
+          <div class="p-row"><div>Watch apps<small>Stay awake while exports and renders run</small></div><span class="sw on"></span></div>
+          <div class="p-row"><div>Watch downloads<small>Stay awake while big files download or upload</small></div><span class="sw on"></span></div>
+          <div class="p-row"><div>Watch Terminal<small>Stay awake while commands and CLI agents run</small></div><span class="sw on"></span></div>
+          <div class="p-sep"></div>
+          <div class="p-foot"><span>Claude Code connected</span><span>v{{VERSION}}</span></div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="console" data-pane="apps" hidden>
-        <div class="console-bar"><span>Setup → Pick the apps to watch</span><span class="right"><span class="tag ok">✓ Watch apps on</span></span></div>
-        <div class="apps">
-          <div class="app"><span class="n"><i>FC</i>Final Cut Pro</span><span class="mode on">When busy</span></div>
-          <div class="app"><span class="n"><i>Pr</i>Premiere Pro</span><span class="mode on">When busy</span></div>
-          <div class="app"><span class="n"><i>DR</i>DaVinci Resolve</span><span class="mode on">When busy</span></div>
-          <div class="app"><span class="n"><i>HB</i>HandBrake</span><span class="mode on">When busy</span></div>
-          <div class="app"><span class="n"><i>BL</i>Blender</span><span class="mode on">When busy</span></div>
-          <div class="app"><span class="n"><i>LP</i>Logic Pro</span><span class="mode on">When busy</span></div>
-          <div class="app"><span class="n"><i>XC</i>Xcode</span><span class="mode">Off</span></div>
-          <div class="app"><span class="n"><i>VL</i>VLC</span><span class="mode on">While open</span></div>
-          <div class="app"><span class="n"><i>+</i>Any other app</span><a class="btn btn-line" href="/docs/apps/#add-any-app">Add…</a></div>
+  <div class="container">
+    <div class="highlights">
+      <div class="hl"><svg><use href="#eye-awake"/></svg><div><h3>Awake only while it matters</h3><p>Holds off sleep while work is running and gives it back the second it stops.</p></div></div>
+      <div class="hl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M7 9l3 3-3 3M13 15h4"/></svg><div><h3>Apps, agents and terminals</h3><p>Exports in Final Cut Pro and Premiere, renders in Blender, downloads and uploads, Claude Code, and every terminal tab.</p></div></div>
+      <div class="hl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg><div><h3>Local and open source</h3><p>Runs entirely on your Mac. No account, no analytics, MIT licensed.</p></div></div>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+
+  <section id="how">
+    <div class="container">
+      <div class="split">
+        <h2 class="title">Awake while it works.<br>Asleep when it's done.</h2>
+        <p class="lead">Long runs shouldn't stall because your Mac dozed off, and your Mac shouldn't stay up all night because you forgot to switch off a keep-awake app. <a class="more" href="/docs/how-it-works/">How it works →</a></p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <div class="card-art">
+            <div class="mini-term"><div class="bar"><i></i><i></i><i></i></div><pre><span class="c-dim">❯</span> claude
+<span class="c-fg">&gt; refactor the auth module</span>
+<span class="c-warm">●</span> Editing 9 files…
+<span class="c-dim">❯</span> cargo build --release
+<span class="c-dim">   Compiling</span> server v0.4.2</pre></div>
+          </div>
+          <div class="card-copy"><h3>You start the work</h3><p>Export a video, start a big download, prompt Claude or kick off a build. Dozer picks it up within seconds.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-art">
+            <div class="eye-pair">
+              <div class="eye-tile dozing"><svg><use href="#eye-dozing"/></svg></div>
+              <span class="arrow">→</span>
+              <div class="eye-tile awake"><svg><use href="#eye-awake"/></svg></div>
+            </div>
+          </div>
+          <div class="card-copy"><h3>The eye opens</h3><p>The menu bar eye opens while anything is running. Your Mac won't idle-sleep, even if you walk away for hours.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-art">
+            <div class="notif"><img src="/assets/icon-512.png" alt=""><div><b>All done</b><span>Everything Dozer was watching has finished, so your Mac can sleep again.</span></div><time>now</time></div>
+          </div>
+          <div class="card-copy"><h3>It dozes off</h3><p>When the last task ends, Dozer lets go. Your normal energy settings take over, and you can get a notification to say so.</p></div>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="console" data-pane="terminal" hidden>
-        <div class="console-bar"><span>~/Code/server</span><span class="right"><span class="tag run">Running</span></span></div>
-<pre class="term"><span class="d">❯</span> <span class="w">cargo build --release</span>
-<span class="d">   Compiling</span> server v0.4.2            <span class="y">● keeps the Mac awake while it runs</span>
-<span class="d">❯</span> <span class="w">claude</span>
-<span class="w">&gt; refactor the auth module</span>
-<span class="y">●</span> Editing 9 files…                     <span class="y">● awake while it works (hooks)</span>
-<span class="ok">✓</span> Done.
-<span class="d">&gt; _</span>                                    <span class="ok">✓ idle at the prompt: Mac can sleep</span>
-<span class="d">❯</span> <span class="w">codex</span>                                <span class="ok">✓ ignored until it keeps working for ~15s</span></pre>
+  <div class="rule"></div>
+
+  <section id="agents">
+    <div class="container">
+      <div class="center">
+        <h2 class="title">Works with the apps and agents you use</h2>
+        <p class="lead">Creative and developer apps count while they're exporting, rendering or building. Claude Code connects through hooks for exact start and stop, and everything else is picked up from your terminal. Apps and agents sitting idle never keep your Mac up, and you can add any other app yourself.</p>
       </div>
-    </section>
-
-    <section class="rule">
-      <div class="trio">
-        <article><span class="label g">01 · Apps</span><h3>Exports and renders finish overnight</h3><p>Final Cut Pro, Premiere, DaVinci Resolve, Blender, HandBrake, Logic and more keep your Mac awake while they're working hard. Opening them doesn't count.</p><a class="more" href="/docs/apps/">How app watching works →</a></article>
-        <article><span class="label g">02 · Transfers</span><h3>Big downloads and uploads don't stall</h3><p>Downloads in any browser, uploads to YouTube or Dropbox, cloud folders syncing and backups. Music and messages don't count.</p><a class="more" href="/docs/downloads/">Downloads &amp; uploads →</a></article>
-        <article><span class="label g">03 · Agents</span><h3>Claude Code and every terminal</h3><p>Claude Code connects through hooks for exact start and stop. Builds, scripts and CLI agents like Codex and Gemini are picked up in any terminal.</p><a class="more" href="/docs/terminal/">Terminal &amp; agents →</a></article>
+      <div class="chips">
+        <span class="chip"><i></i>Final Cut Pro</span><span class="chip"><i></i>Compressor</span><span class="chip"><i></i>Premiere Pro</span><span class="chip"><i></i>Media Encoder</span>
+        <span class="chip"><i></i>After Effects</span><span class="chip"><i></i>DaVinci Resolve</span><span class="chip"><i></i>HandBrake</span><span class="chip"><i></i>iMovie</span>
+        <span class="chip"><i></i>Logic Pro</span><span class="chip"><i></i>Ableton Live</span><span class="chip"><i></i>Blender</span><span class="chip"><i></i>Cinema 4D</span>
+        <span class="chip"><i></i>Lightroom</span><span class="chip"><i></i>Photoshop</span><span class="chip"><i></i>Unity</span><span class="chip"><i></i>Xcode</span>
+        <span class="chip"><i></i>Downloads in any browser</span><span class="chip"><i></i>Uploads to YouTube · Dropbox</span><span class="chip"><i></i>iCloud · Google Drive sync</span>
+        <span class="chip"><i></i>Claude Code</span><span class="chip"><i></i>Codex</span><span class="chip"><i></i>Gemini CLI</span><span class="chip"><i></i>Aider</span>
+        <span class="chip"><i></i>OpenCode</span><span class="chip"><i></i>Cursor Agent</span><span class="chip"><i></i>Amp</span><span class="chip"><i></i>Goose</span>
+        <span class="chip"><i></i>Qwen Code</span><span class="chip"><i></i>Crush</span><span class="chip"><i></i>Droid</span><span class="chip"><i></i>Copilot CLI</span>
+        <span class="chip"><i></i>Kiro</span><span class="chip"><i></i>Cline</span><span class="chip"><i></i>Plandex</span><span class="chip"><i></i>OpenHands</span>
+        <span class="chip"><i></i>npm · pnpm · bun</span><span class="chip"><i></i>cargo</span><span class="chip"><i></i>xcodebuild</span><span class="chip"><i></i>pytest</span>
+        <span class="chip"><i></i>docker</span><span class="chip"><i></i>rsync</span><span class="chip"><i></i>make</span>
+        <span class="chip any">Any other app, command or CLI agent</span>
       </div>
-    </section>
+      <div class="cta" style="margin-top:36px"><a class="btn btn-dark btn-lg" href="/watches/">See everything Dozer watches<svg><use href="#i-arrow"/></svg></a></div>
+    </div>
+  </section>
 
-    <section class="rule">
-      <div class="sec-head">
-        <div><span class="label g">// How it works</span><h2>Awake while it works. Asleep when it's done.</h2></div>
-        <p>Keep-awake timers make you guess how long the work will take, and leaving a movie playing wastes memory. Dozex watches the work itself, so your Mac sleeps on time. <a class="more" href="/docs/how-it-works/">What Dozex checks →</a></p>
+  <div class="rule"></div>
+
+  <section>
+    <div class="container">
+      <div class="split">
+        <h2 class="title">Smarter than<br>a timer</h2>
+        <p class="lead">Keep-awake apps make you guess how long the work will take. Dozer watches the work itself, so you never have to guess.</p>
+      </div>
+      <div class="table">
+        <table>
+          <thead><tr><th>Capability</th><th class="c us">Dozer</th><th class="c">Keep-awake timers</th></tr></thead>
+          <tbody>
+            <tr><td>Stays awake exactly as long as the work runs</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">You guess</td></tr>
+            <tr><td>Lets your Mac sleep the moment work ends</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">When the timer runs out</td></tr>
+            <tr><td>Knows when an export or render is running</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">—</td></tr>
+            <tr><td>Waits for big downloads and uploads to finish</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">—</td></tr>
+            <tr><td>Knows when Claude Code starts and stops</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">—</td></tr>
+            <tr><td>Watches every terminal tab and CLI agent</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">—</td></tr>
+            <tr><td>Ignores idle apps, agents and ssh sessions</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">—</td></tr>
+            <tr><td>Notifies you when everything's done</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">—</td></tr>
+            <tr><td>Menu bar and Control Center toggle</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">Varies</td></tr>
+            <tr><td>Updates itself in one click</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">Varies</td></tr>
+            <tr><td>Free and open source under MIT</td><td class="c"><svg class="check"><use href="#i-check"/></svg></td><td class="c o">Varies</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section id="install">
+    <div class="container">
+      <div class="split">
+        <h2 class="title">Set up in a minute</h2>
+        <p class="lead">A small download for Apple Silicon and Intel Macs on macOS 14 or later. Updates install themselves from the menu bar. <a class="more" href="/docs/install/">Full install guide →</a></p>
       </div>
       <div class="steps">
-        <article class="step"><span class="num">1</span><h3>Start the work</h3><p>Export a video, start a download, prompt Claude or kick off a build. Then walk away.</p></article>
-        <article class="step"><span class="num">2</span><h3>The eye opens</h3><p>Dozex notices within seconds and the menu bar eye opens. Your Mac won't idle-sleep, even if you're gone for hours.</p></article>
-        <article class="step"><span class="num">3</span><h3>It dozes off</h3><p>When the last task ends, Dozex lets go and your normal sleep settings take over. A notification tells you it's done.</p></article>
+        <div class="step"><div class="n">01</div><h3>Download and drag</h3><p>Open <b>Dozer.dmg</b> and drag Dozer into Applications.</p></div>
+        <div class="step"><div class="n">02</div><h3>Allow it to open</h3><p>Dozer isn't notarized yet. The first time, click <b>Open Anyway</b> in System Settings → Privacy &amp; Security, or run:</p>
+          <div class="code"><code>xattr -dr com.apple.quarantine /Applications/Dozer.app</code><button type="button" data-copy>Copy</button></div></div>
+        <div class="step"><div class="n">03</div><h3>Pick your apps</h3><p>The setup page lists the export and render apps on your Mac, already switched on. Using Claude Code? Click <b>Connect Claude Code</b> too. Then look for the eye in your menu bar.</p></div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="rule">
-      <div class="sec-head">
-        <div><span class="label g">// Questions</span><h2>Good to know</h2></div>
-        <p>More answers in the <a class="more" href="/docs/troubleshooting/">troubleshooting guide →</a></p>
-      </div>
+  <div class="rule"></div>
+
+  <section id="faq">
+    <div class="container">
+      <div class="center"><h2 class="title">Questions</h2><p class="lead">More answers in the <a class="more" href="/docs/troubleshooting/">docs</a>.</p></div>
       <div class="faq">
-        <details><summary>Can it keep my Mac awake while Final Cut Pro exports?</summary>
-          <p>Yes. Final Cut Pro is watched out of the box. Once an export or render has kept it busy for about 15 seconds, your Mac stays awake until it finishes. No changing sleep settings and no movie playing in the background.</p></details>
-        <details><summary>Will an idle app or agent keep my Mac awake all night?</summary>
-          <p>No. Apps, agents, editors and ssh sessions only count while they keep working, so a project left open or a session waiting at its prompt lets your Mac sleep as usual.</p></details>
-        <details><summary>What happens if I close my MacBook's lid?</summary>
-          <p>macOS always sleeps when the lid closes without an external display, and no app can change that without admin tweaks. Keep the lid open for long jobs, or use an external display.</p></details>
-        <details><summary>What does it change on my Mac?</summary>
-          <p>Nothing permanent. To stay awake it uses a standard macOS power assertion, the same one video players use. If you connect Claude Code, it adds a few hooks to <code>~/.claude/settings.json</code> after backing it up, and removes them if you disconnect.</p></details>
-        <details><summary>Is it free?</summary>
-          <p>Yes. Dozex is free and open source under the MIT license, with no account and no analytics.</p></details>
+        <details><summary>Can it keep my Mac awake while Final Cut Pro exports?<svg><use href="#i-chev"/></svg></summary>
+          <p>Yes. Dozer notices when Final Cut Pro, Premiere Pro, DaVinci Resolve, Blender, HandBrake and other apps are working hard and keeps your Mac awake until they finish. No need to change your sleep settings or leave a movie playing. Any other app can be added on the setup page, and any app can be set to keep your Mac awake the whole time it's open.</p></details>
+        <details><summary>Will it stop my Mac sleeping during a big download?<svg><use href="#i-chev"/></svg></summary>
+          <p>Yes. Downloads in any browser, uploads to YouTube, Dropbox or WeTransfer, cloud folders syncing and online backups keep your Mac awake until they finish. Light traffic like music or messages doesn't count, and a transfer has to keep going for about 15 seconds before it does.</p></details>
+        <details><summary>Which agents and terminals does it work with?<svg><use href="#i-chev"/></svg></summary>
+          <p>Claude Code connects through hooks, in both the CLI and the Code tab of the Claude desktop app. Every other agent, including Codex, Gemini CLI, Aider and OpenCode, is detected in any terminal: Terminal, iTerm, Ghostty, Warp, VS Code and tmux panes.</p></details>
+        <details><summary>Will an idle app or agent keep my Mac awake all night?<svg><use href="#i-chev"/></svg></summary>
+          <p>No. Apps, agents, editors, <code>ssh</code>, <code>tmux</code> and REPLs only count while they keep using CPU for a few seconds in a row, so a quick spike doesn't count. An app with a project open, or a session left at the prompt, lets your Mac sleep as usual. Regular commands like builds and tests count for as long as they run.</p></details>
+        <details><summary>What happens if I close my MacBook's lid?<svg><use href="#i-chev"/></svg></summary>
+          <p>macOS always sleeps when the lid closes without an external display, and no app can override that without admin changes. Keep the lid open for long runs, or use an external display.</p></details>
+        <details><summary>What does it change on my Mac?<svg><use href="#i-chev"/></svg></summary>
+          <p>It adds a few hooks to <code>~/.claude/settings.json</code>, after backing up the original, and removes them if you disconnect. To stay awake it uses a standard macOS power assertion, the same one video players use.</p></details>
+        <details><summary>Is it free?<svg><use href="#i-chev"/></svg></summary>
+          <p>Yes. Dozer is free and open source under the MIT license.</p></details>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="final">
-      <img src="/assets/icon-512.png" alt="" />
-      <h2>Let the work finish. Then let your Mac rest.</h2>
+  <div class="rule"></div>
+
+  <div class="final">
+    <div class="container">
+      <h2 class="display">Get Dozer</h2>
+      <p class="lead">Let the work finish. Then let your Mac rest.</p>
       <div class="cta">
-        <a class="btn btn-white" href="/download/">Download Dozex</a>
-        <a class="btn btn-line" href="/docs/">Read the docs</a>
+        <a class="btn btn-light btn-lg" href="{{DMG}}"><svg><use href="#i-dl"/></svg>Download for Mac</a>
+        <a class="btn btn-dark btn-lg" href="/docs/">Read the docs</a>
       </div>
-    </section>
-  </main>
+      <p class="fine">macOS 14+ · Apple Silicon &amp; Intel</p>
+    </div>
+  </div>
+</main>

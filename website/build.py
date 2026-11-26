@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Builds the Dozex website into ./public from the fragments in ./src.
+"""Builds the Dozer website into ./public from the fragments in ./src.
 
-Same setup as the Agent2 site: every page shares one header and footer.
-Docs pages also get the sidebar, an "On this page" list built from their
-<h2> headings, and prev/next links.
+Every page gets the same header, footer and icon sprite. Docs pages also get
+the sidebar, an "On this page" list built from their <h2> headings, and
+prev/next links.
 
-    python3 website/build.py      # writes website/public/**/index.html
-    npx -y wrangler@4.166.0 deploy  # from the repo root
+    python3 website/build.py          # writes website/public/**/index.html
+    npx -y wrangler@4.166.0 deploy    # from the repo root
 """
 import html
 import re
@@ -17,42 +17,62 @@ SRC = ROOT / "src"
 OUT = ROOT / "public"
 
 SITE = "https://dozer.shakatec.co.za"
-REPO = "https://github.com/sekophungula/Dozex"
-DMG = f"{REPO}/releases/latest/download/Dozex.dmg"
-VERSION = "1.5.0"
+REPO = "https://github.com/sekophungula/Dozer"
+DMG = f"{REPO}/releases/latest/download/Dozer.dmg"
+VERSION = "1.6.0"
 
 # (path, source fragment, nav key, title, description)
 PAGES = [
-    ("", "home.html", "home", "Dozex — keep your Mac awake while your work runs",
-     "A free macOS menu bar app that keeps your Mac awake while exports, renders, downloads, builds and AI agents run, then lets it sleep the moment they're done."),
-    ("watches/", "watches.html", "watches", "What Dozex watches",
-     "The apps, transfers, terminal commands and AI agents that keep your Mac awake with Dozex."),
-    ("changelog/", "changelog.html", "changelog", "Changelog — Dozex",
-     "Every Dozex release: new features, improvements and fixes."),
-    ("download/", "download.html", "download", "Download Dozex",
-     "Download Dozex for macOS, or build it from source."),
+    ("", "home.html", "home", "Dozer: keep your Mac awake while your work runs",
+     "Dozer is a free macOS menu bar app that keeps your Mac awake while exports, renders, downloads, builds and AI agents run, then lets it sleep the moment they're done."),
+    ("watches/", "watches.html", "watches", "What Dozer watches",
+     "The apps, transfers, terminal commands and AI agents that keep your Mac awake with Dozer."),
+    ("changelog/", "changelog.html", "changelog", "Changelog · Dozer",
+     "Every Dozer release: new features, improvements and fixes."),
+    ("download/", "download.html", "download", "Download Dozer",
+     "Download Dozer for macOS, or build it from source."),
 ]
 
 # Docs, in sidebar order: (group, slug, title, blurb)
 DOCS = [
-    ("Start here", "", "What is Dozex?", "A menu bar app that keeps your Mac awake exactly as long as your work runs."),
+    ("Start here", "", "What is Dozer?", "A menu bar app that keeps your Mac awake exactly as long as your work runs."),
     ("Start here", "install", "Install", "Download, allow it once, and pick what to watch."),
     ("Start here", "menu-bar", "The menu bar", "What the eye means and what each switch does."),
     ("What it watches", "apps", "Apps", "Final Cut Pro, Premiere, Blender and other apps while they export, render or build."),
     ("What it watches", "downloads", "Downloads & uploads", "Big file transfers, cloud syncs and backups."),
     ("What it watches", "terminal", "Terminal & CLI agents", "Commands and agents running in any terminal."),
     ("What it watches", "claude-code", "Claude Code", "Exact start and stop through Claude Code hooks."),
-    ("Using Dozex", "settings", "Settings", "Keep-awake, display, grace period and notifications."),
-    ("Using Dozex", "control-center", "Control Center & login", "Put the toggle where you want it and start with your Mac."),
-    ("Using Dozex", "updates", "Updates", "How Dozex updates itself."),
+    ("Using Dozer", "settings", "Settings", "Keep-awake, display, grace period and notifications."),
+    ("Using Dozer", "control-center", "Control Center & login", "Put the toggle where you want it and start with your Mac."),
+    ("Using Dozer", "updates", "Updates", "How Dozer updates itself."),
     ("Help", "troubleshooting", "Troubleshooting", "Fixes for common problems."),
-    ("Help", "how-it-works", "How it works", "What Dozex checks, and what it changes on your Mac."),
-    ("Help", "build-from-source", "Build from source", "Compile Dozex yourself."),
+    ("Help", "how-it-works", "How it works", "What Dozer checks, and what it changes on your Mac."),
+    ("Help", "build-from-source", "Build from source", "Compile Dozer yourself."),
 ]
 
-GITHUB_ICON = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>'
-DOWNLOAD_ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 2v8m0 0L4.5 6.5M8 10l3.5-3.5M2.5 13.5h11"/></svg>'
-BRAND = '<a class="brand" href="/"><img src="/assets/icon-512.png" alt="" width="26" height="26" />Dozex</a>'
+# Eye icons match the menu bar icons in the app.
+SPRITE = """<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><clipPath id="eye-open"><path d="M1.8 6.84C5.69 13.32 12.31 13.32 16.2 6.84Z"/></clipPath></defs>
+  <symbol id="eye-dozing" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-linecap="round">
+    <path d="M1.8 6.84C5.69 13.32 12.31 13.32 16.2 6.84" stroke-width="1.98"/>
+    <path d="M4.54 9.83L3.65 12.71M9 11.7V14.58M13.46 9.83L14.35 12.71" stroke-width="1.68"/>
+  </symbol>
+  <symbol id="eye-awake" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-linecap="round">
+    <circle cx="9" cy="6.84" r="3.24" fill="currentColor" stroke="none" clip-path="url(#eye-open)"/>
+    <path d="M1.8 6.84C5.69 13.32 12.31 13.32 16.2 6.84" stroke-width="1.98"/>
+    <path d="M1.26 6.84H16.74" stroke-width="2.18"/>
+    <path d="M4.54 9.83L3.65 12.71M9 11.7V14.58M13.46 9.83L14.35 12.71" stroke-width="1.68"/>
+  </symbol>
+  <symbol id="i-dl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+  <symbol id="i-gh" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-app" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M10 8.5v7l5.5-3.5z"/></symbol>
+  <symbol id="i-net" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4v14M4 14l4 4 4-4M16 20V6M12 10l4-4 4 4"/></symbol>
+  <symbol id="i-term" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M7 9l3 3-3 3M13 15h4"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></symbol>
+</svg>"""
 
 
 def header(active: str) -> str:
@@ -60,69 +80,55 @@ def header(active: str) -> str:
         cls = ' class="on"' if key == active else ""
         return f'<a href="{href}"{cls}>{label}</a>'
     return f"""
-  <header class="nav">
-    <div class="nav-inner">
-      {BRAND}
-      <nav class="links">
+{SPRITE}
+
+<header class="nav">
+  <div class="container">
+    <div class="nav-left">
+      <a class="brand" href="/"><img src="/assets/icon-512.png" alt="">Dozer</a>
+      <nav class="nav-links">
         {link("/docs/", "docs", "Docs")}
         {link("/watches/", "watches", "What it watches")}
         {link("/changelog/", "changelog", "Changelog")}
         {link("/download/", "download", "Download")}
       </nav>
-      <div class="nav-cta">
-        <a class="btn btn-line btn-sm gh" href="{REPO}">{GITHUB_ICON}<span data-stars>GitHub</span></a>
-        <a class="btn btn-white btn-sm" href="/download/">{DOWNLOAD_ICON}Download</a>
-        <button class="menu-btn" aria-label="Menu" aria-expanded="false" data-menu>☰</button>
-      </div>
     </div>
-    <nav class="mobile-links" data-mobile>
-      <a href="/docs/">Docs</a><a href="/watches/">What it watches</a><a href="/changelog/">Changelog</a><a href="/download/">Download</a><a href="{REPO}">GitHub</a>
-    </nav>
-  </header>"""
+    <div class="nav-right">
+      <a class="gh" href="{REPO}"><svg><use href="#i-gh"/></svg><span>GitHub</span></a>
+      <a class="btn btn-light" href="/download/"><svg><use href="#i-dl"/></svg>Download</a>
+    </div>
+  </div>
+</header>"""
 
 
 FOOTER = f"""
-  <footer class="footer">
-    <div class="frame">
-      <div class="foot">
-        <div>{BRAND}<p>Keeps your Mac awake while your work runs. A macOS menu bar app.</p></div>
-        <div><span class="label">Product</span><a href="/download/">Download</a><a href="/watches/">What it watches</a><a href="/changelog/">Changelog</a></div>
-        <div><span class="label">Docs</span><a href="/docs/">What is Dozex?</a><a href="/docs/install/">Install</a><a href="/docs/troubleshooting/">Troubleshooting</a></div>
-        <div><span class="label">Source</span><a href="{REPO}">GitHub</a><a href="{REPO}/releases">Releases</a><a href="{REPO}/blob/main/LICENSE">MIT License</a></div>
-      </div>
-      <div class="legal"><span>© 2026 <a href="https://shakatec.co.za">ShakaTec</a> · Not affiliated with Anthropic</span><span class="sw">v{VERSION}</span></div>
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div><a class="brand" href="/"><img src="/assets/icon-512.png" alt="">Dozer</a><p>Keeps your Mac awake while your work runs. Free and open source for macOS.</p></div>
+      <div><h4>Product</h4><ul><li><a href="/download/">Download</a></li><li><a href="/watches/">What it watches</a></li><li><a href="/changelog/">Changelog</a></li></ul></div>
+      <div><h4>Docs</h4><ul><li><a href="/docs/">What is Dozer?</a></li><li><a href="/docs/install/">Install</a></li><li><a href="/docs/troubleshooting/">Troubleshooting</a></li></ul></div>
+      <div><h4>Community</h4><ul><li><a href="{REPO}">GitHub</a></li><li><a href="{REPO}/issues">Report an issue</a></li><li><a href="{REPO}/blob/main/LICENSE">MIT License</a></li></ul></div>
     </div>
-  </footer>"""
+    <div class="legal"><span>© 2026 <a href="https://shakatec.co.za">ShakaTec</a>. Not affiliated with Anthropic.</span><span>v{VERSION}</span></div>
+  </div>
+</footer>"""
 
 SCRIPT = """
-  <script>
-  (function () {
-    var b = document.querySelector('[data-menu]'), m = document.querySelector('[data-mobile]');
-    if (b && m) b.addEventListener('click', function () { var o = m.classList.toggle('open'); b.setAttribute('aria-expanded', o); });
-    document.querySelectorAll('[data-copy]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var t = btn.closest('.cmd').querySelector('code').innerText;
-        navigator.clipboard.writeText(t).then(function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1400); });
-      });
+<script>
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = b.parentNode.querySelector('code').textContent;
+      if (!navigator.clipboard) return;
+      navigator.clipboard.writeText(t).then(function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); });
     });
-    document.querySelectorAll('[data-tabs]').forEach(function (root) {
-      var tabs = root.querySelectorAll('[data-tab]'), panes = root.querySelectorAll('[data-pane]');
-      tabs.forEach(function (t) { t.addEventListener('click', function () {
-        tabs.forEach(function (x) { x.classList.toggle('on', x === t); x.setAttribute('aria-selected', x === t); });
-        panes.forEach(function (p) { p.hidden = p.dataset.pane !== t.dataset.tab; });
-      }); });
-    });
-    var q = document.querySelector('[data-docsearch]');
-    if (q) q.addEventListener('input', function () {
-      var v = q.value.toLowerCase();
-      document.querySelectorAll('.docs-nav a').forEach(function (a) { a.hidden = v && a.textContent.toLowerCase().indexOf(v) < 0; });
-    });
-    var s = document.querySelector('[data-stars]');
-    if (s) fetch('https://api.github.com/repos/sekophungula/Dozex').then(function (r) { return r.json(); })
-      .then(function (d) { if (d.stargazers_count > 0) s.textContent = d.stargazers_count.toLocaleString(); }).catch(function () {});
-  })();
-  </script>"""
-
+  });
+  var q = document.querySelector('[data-docsearch]');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.toLowerCase();
+    document.querySelectorAll('.docs-nav a').forEach(function (a) { a.hidden = v && a.textContent.toLowerCase().indexOf(v) < 0; });
+  });
+</script>"""
 
 EXTERNAL_LINK = re.compile(r'<a\b([^>]*?)\bhref="(https?://[^"]+)"([^>]*)>')
 
@@ -134,7 +140,7 @@ def external_links(doc: str) -> str:
         attrs = before + after
         if "dozer.shakatec.co.za" in href or href.endswith((".dmg", ".zip")) or "target=" in attrs:
             return m.group(0)
-        return f'<a{before}href="{href}"{after} target="_blank" rel="noopener noreferrer">'
+        return f'<a{before}href="{href}"{after} target="_blank" rel="noopener">'
     return EXTERNAL_LINK.sub(fix, doc)
 
 
@@ -142,29 +148,30 @@ def page(title, desc, active, body, url):
     return external_links(f"""<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{html.escape(title)}</title>
-  <meta name="description" content="{html.escape(desc)}" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Dozex" />
-  <meta property="og:title" content="{html.escape(title)}" />
-  <meta property="og:description" content="{html.escape(desc)}" />
-  <meta property="og:image" content="{SITE}/assets/og.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Dozex: keep your Mac awake while your work runs" />
-  <meta property="og:url" content="{SITE}/{url}" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="{SITE}/assets/og.png" />
-  <meta name="theme-color" content="#0b0b0b" />
-  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
-  <link rel="icon" type="image/png" href="/assets/favicon.png" />
-  <link rel="apple-touch-icon" href="/assets/icon-512.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{html.escape(title)}</title>
+<meta name="description" content="{html.escape(desc)}">
+<link rel="canonical" href="{SITE}/{url}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dozer">
+<meta property="og:title" content="{html.escape(title)}">
+<meta property="og:description" content="{html.escape(desc)}">
+<meta property="og:image" content="{SITE}/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Dozer: keeps your Mac awake while your work runs">
+<meta property="og:url" content="{SITE}/{url}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{SITE}/assets/og.png">
+<meta name="theme-color" content="#08090a">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
 </head>
 <body>{header(active)}
 {body}
@@ -199,38 +206,40 @@ def docs_page(i: int) -> str:
     nav, last = [], None
     for g, s, t, _ in DOCS:
         if g != last:
-            nav.append(f'<span class="label">{g}</span>')
+            nav.append(f"<h4>{g}</h4>")
             last = g
         on = ' class="on"' if s == slug else ""
-        nav.append(f'<a href="/docs/{s + "/" if s else ""}"{on}>{t}</a>')
+        nav.append(f'<a href="/docs/{s + "/" if s else ""}"{on}>{html.escape(t)}</a>')
 
     prev_l = next_l = ""
     if i > 0:
         p = DOCS[i - 1]
-        prev_l = f'<a class="pn" href="/docs/{p[1] + "/" if p[1] else ""}"><span class="label">← Previous</span>{p[2]}</a>'
+        prev_l = f'<a class="pn" href="/docs/{p[1] + "/" if p[1] else ""}"><small>← Previous</small>{html.escape(p[2])}</a>'
     if i < len(DOCS) - 1:
         n = DOCS[i + 1]
-        next_l = f'<a class="pn next" href="/docs/{n[1]}/"><span class="label">Next →</span>{n[2]}</a>'
+        next_l = f'<a class="pn next" href="/docs/{n[1]}/"><small>Next →</small>{html.escape(n[2])}</a>'
 
     toc_html = "".join(f'<a href="#{h}">{t}</a>' for h, t in toc)
     edit = f"{REPO}/edit/main/website/src/docs/{slug or 'index'}.html"
     body = f"""
-  <main class="docs">
+<main class="container">
+  <div class="docs">
     <aside class="docs-side">
-      <input class="docs-search" type="search" placeholder="Search docs" aria-label="Search docs" data-docsearch />
+      <input class="docs-search" type="search" placeholder="Search docs" aria-label="Search docs" data-docsearch>
       <nav class="docs-nav">{''.join(nav)}</nav>
     </aside>
     <article class="docs-body">
-      <span class="label g">// {group}</span>
-      <h1>{title}</h1>
+      <span class="eyebrow">{group}</span>
+      <h1>{html.escape(title)}</h1>
       <p class="docs-lead">{blurb}</p>
       <div class="prose">{content}</div>
       <div class="pn-row">{prev_l}{next_l}</div>
       <a class="edit" href="{edit}">Edit this page on GitHub →</a>
     </article>
-    <aside class="docs-toc">{'<span class="label">On this page</span>' + toc_html if toc else ''}</aside>
-  </main>"""
-    return page(f"{title} — Dozex Docs", blurb, "docs", body, f"docs/{slug + '/' if slug else ''}")
+    <aside class="docs-toc">{'<h4>On this page</h4>' + toc_html if toc else ''}</aside>
+  </div>
+</main>"""
+    return page(f"{title} · Dozer Docs", blurb, "docs", body, f"docs/{slug + '/' if slug else ''}")
 
 
 def main():
@@ -245,7 +254,7 @@ def main():
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(docs_page(i))
         print("wrote", out.relative_to(ROOT))
-    nf = page("Not found — Dozex", "This page doesn't exist.", "", fill((SRC / "404.html").read_text()), "404")
+    nf = page("Not found · Dozer", "This page doesn't exist.", "", fill((SRC / "404.html").read_text()), "404")
     (OUT / "404.html").write_text(nf)
     print("wrote public/404.html")
 

@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 @main
-struct DozexApp: App {
+struct DozerApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var state = AppState.shared
 
@@ -13,7 +13,7 @@ struct DozexApp: App {
                 .environmentObject(Updater.shared)
         } label: {
             Image(nsImage: EyeIcon.menuBar(state.menuBarIcon))
-                .accessibilityLabel("Dozex")
+                .accessibilityLabel("Dozer")
         }
         .menuBarExtraStyle(.window)
     }
@@ -26,7 +26,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if Updater.shared.renameLegacyBundleIfNeeded() { return }
             AppState.shared.start()
             Updater.shared.startAutomaticChecks()
-            // `Dozex --install-update` updates without any clicks (handy for scripts).
+            // `Dozer --install-update` updates without any clicks (handy for scripts).
             if CommandLine.arguments.contains("--install-update") {
                 await Updater.shared.check()
                 await Updater.shared.installUpdate()
@@ -48,7 +48,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-/// Hosts the setup / landing page in a regular window, even though Dozex
+/// Hosts the setup / landing page in a regular window, even though Dozer
 /// lives in the menu bar and has no Dock icon.
 @MainActor
 final class SetupWindowController: NSObject, NSWindowDelegate {
@@ -61,7 +61,7 @@ final class SetupWindowController: NSObject, NSWindowDelegate {
                 .environmentObject(AppState.shared)
                 .environmentObject(Updater.shared))
             let win = NSWindow(contentViewController: hosting)
-            win.title = "Dozex"
+            win.title = "Dozer"
             win.styleMask = [.titled, .closable, .miniaturizable, .fullSizeContentView]
             win.titlebarAppearsTransparent = true
             win.titleVisibility = .hidden

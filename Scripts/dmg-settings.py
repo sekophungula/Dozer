@@ -1,5 +1,5 @@
-# dmgbuild settings for Dozex.dmg. Called from Scripts/build.sh:
-#   dmgbuild -s Scripts/dmg-settings.py -D app=build/Dozex.app -D background=build/background.tiff "Dozex" build/Dozex.dmg
+# dmgbuild settings for Dozer.dmg. Called from Scripts/build.sh:
+#   dmgbuild -s Scripts/dmg-settings.py -D app=build/Dozer.app -D background=build/background.tiff "Dozer" build/Dozer.dmg
 # Icon positions must match the plates drawn by Scripts/make-dmg-background.swift.
 import os.path
 

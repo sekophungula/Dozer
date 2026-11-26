@@ -1,42 +1,44 @@
-  <main class="frame">
-    <section class="page-head">
-      <span class="label g">// Download</span>
-      <h1>Get Dozex for your Mac</h1>
+<main>
+  <div class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Download</span>
+      <h1 class="display">Get Dozer for your Mac</h1>
       <p class="lead">One universal build for Apple Silicon and Intel, about 2 MB. Free and open source under the MIT license.</p>
-    </section>
-
-    <section class="rule">
-      <div class="block-head">
-        <div><h2>Desktop</h2><p>The latest version, straight from GitHub Releases. Dozex updates itself after that.</p></div>
-        <a class="btn btn-line btn-sm" href="{{REPO}}/releases">All releases</a>
+      <div class="cta" style="margin-top:32px">
+        <a class="btn btn-light btn-lg" href="{{DMG}}"><svg><use href="#i-dl"/></svg>Download for Mac</a>
+        <a class="btn btn-dark btn-lg" href="{{REPO}}/releases"><svg><use href="#i-gh"/></svg>All releases</a>
       </div>
+      <p class="fine">Version {{VERSION}} · macOS 14+ · Apple Silicon &amp; Intel</p>
+    </div>
+  </div>
+
+  <div class="container page-body">
+    <div class="group">
+      <div class="sec-title"><div><h2>Downloads</h2><p>Straight from GitHub Releases. Dozer updates itself after that.</p></div></div>
       <div class="dl-grid">
-        <a class="dl" href="{{DMG}}">
-          <span><b>macOS</b><small>Apple Silicon &amp; Intel · .dmg · v{{VERSION}}</small></span><span class="dl-ico">↓</span>
-        </a>
-        <a class="dl" href="{{REPO}}/releases/latest/download/Dozex.zip">
-          <span><b>macOS (zip)</b><small>Same app, no disk image · v{{VERSION}}</small></span><span class="dl-ico">↓</span>
-        </a>
-        <div class="dl off"><span><b>Windows</b><small>Not available · Dozex is macOS-only</small></span><span class="tag">—</span></div>
-        <div class="dl off"><span><b>Linux</b><small>Not available</small></span><span class="tag">—</span></div>
+        <a class="dl" href="{{DMG}}"><span><b>macOS</b><small>Disk image · Apple Silicon &amp; Intel · v{{VERSION}}</small></span><span class="btn btn-light"><svg><use href="#i-dl"/></svg>.dmg</span></a>
+        <a class="dl" href="{{REPO}}/releases/latest/download/Dozer.zip"><span><b>macOS (zip)</b><small>Same app, no disk image · v{{VERSION}}</small></span><span class="btn btn-dark"><svg><use href="#i-dl"/></svg>.zip</span></a>
+        <div class="dl off"><span><b>Windows</b><small>Not available. Dozer is macOS-only.</small></span></div>
+        <div class="dl off"><span><b>Linux</b><small>Not available.</small></span></div>
       </div>
-    </section>
+    </div>
 
-    <section class="rule">
-      <div class="block-head"><div><h2>Install</h2><p>Three steps the first time.</p></div></div>
-      <ol class="install">
-        <li><span class="num">1</span><div><h3>Open the disk image and drag</h3><p>Open <code>Dozex.dmg</code> and drag <code>Dozex</code> onto the <b>Applications</b> folder beside it.</p></div></li>
-        <li><span class="num">2</span><div><h3>Allow it once in System Settings</h3><p>Dozex isn't notarised by Apple yet, so the first time macOS says <b>“Dozex” Not Opened</b>. Click <b>Done</b>, open <b>System Settings → Privacy &amp; Security</b>, scroll down to <b>Security</b> and click <b>Open Anyway</b> next to Dozex, then confirm. After that it opens normally. <a class="more" href="/docs/troubleshooting/#dozex-not-opened">Step by step →</a></p></div></li>
-        <li><span class="num">3</span><div><h3>Pick what to watch</h3><p>The setup page lists the export and render apps on your Mac, already switched on. Using Claude Code? Click <b>Connect Claude Code</b> too. Then look for the eye in your menu bar. <a class="more" href="/docs/install/">Full install guide →</a></p></div></li>
-      </ol>
-    </section>
-
-    <section class="rule">
-      <div class="block-head"><div><h2>Prefer Terminal?</h2><p>This skips the “Not Opened” step after you've dragged Dozex into Applications.</p></div></div>
-      <div class="cmds">
-        <div class="cmd"><span class="label">Allow Dozex</span><code>xattr -dr com.apple.quarantine /Applications/Dozex.app</code><button class="copy" data-copy>Copy</button></div>
-        <div class="cmd"><span class="label">Build from source</span><code>git clone {{REPO}} &amp;&amp; cd Dozex &amp;&amp; Scripts/build.sh</code><button class="copy" data-copy>Copy</button></div>
+    <div class="group">
+      <div class="sec-title"><div><h2>Install</h2><p>Three steps the first time.</p></div></div>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Download and drag</h3><p>Open <b>Dozer.dmg</b> and drag Dozer onto the Applications folder beside it.</p></div>
+        <div class="step"><div class="n">02</div><h3>Allow it to open</h3><p>Dozer isn't notarised by Apple yet. The first time, click <b>Done</b>, then <b>Open Anyway</b> in System Settings → Privacy &amp; Security. <a class="more" href="/docs/troubleshooting/#dozer-not-opened">Step by step →</a></p></div>
+        <div class="step"><div class="n">03</div><h3>Pick what to watch</h3><p>The setup page lists the export and render apps on your Mac, already switched on. Using Claude Code? Click <b>Connect Claude Code</b> too.</p></div>
       </div>
-      <p class="note">Requires macOS 14 Sonoma or later. The Control Center toggle needs macOS 26. <a class="more" href="/docs/build-from-source/">Build from source →</a></p>
-    </section>
-  </main>
+    </div>
+
+    <div class="group">
+      <div class="sec-title"><div><h2>Prefer Terminal?</h2><p>The first command skips the “Not Opened” step once Dozer is in Applications. The second builds it yourself. <a class="more" href="/docs/build-from-source/">Build from source →</a></p></div></div>
+      <div class="cmd-list">
+        <div class="code"><span class="code-label">Allow Dozer</span><code>xattr -dr com.apple.quarantine /Applications/Dozer.app</code><button type="button" data-copy>Copy</button></div>
+        <div class="code"><span class="code-label">Build</span><code>git clone {{REPO}} &amp;&amp; cd Dozer &amp;&amp; Scripts/build.sh</code><button type="button" data-copy>Copy</button></div>
+      </div>
+      <p class="fine" style="text-align:left">The Control Center toggle needs macOS 26 or later.</p>
+    </div>
+  </div>
+</main>

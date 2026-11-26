@@ -5,16 +5,16 @@ import Foundation
 ///
 /// 1. Asks the GitHub API for the latest release and compares its tag with
 ///    the running version.
-/// 2. Downloads the release's `Dozex.zip`, unpacks it and checks that the
+/// 2. Downloads the release's `Dozer.zip`, unpacks it and checks that the
 ///    bundle ID, version and code signature are what we expect.
-/// 3. Swaps the new app into place (wherever Dozex is installed) and
+/// 3. Swaps the new app into place (wherever Dozer is installed) and
 ///    relaunches.
 @MainActor
 final class Updater: ObservableObject {
     static let shared = Updater()
 
-    nonisolated static let repo = "sekophungula/Dozex"
-    nonisolated static let assetName = "Dozex.zip"
+    nonisolated static let repo = "sekophungula/Dozer"
+    nonisolated static let assetName = "Dozer.zip"
 
     enum Status: Equatable {
         case idle
@@ -94,7 +94,7 @@ final class Updater: ObservableObject {
     private func fetchLatestRelease() async throws -> Release {
         var request = URLRequest(url: URL(string: "https://api.github.com/repos/\(Self.repo)/releases/latest")!)
         request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
-        request.setValue("Dozex/\(currentVersion)", forHTTPHeaderField: "User-Agent")
+        request.setValue("Dozer/\(currentVersion)", forHTTPHeaderField: "User-Agent")
         request.cachePolicy = .reloadIgnoringLocalCacheData
         let (data, response) = try await URLSession.shared.data(for: request)
         guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw UpdateError.badResponse }
@@ -134,11 +134,11 @@ final class Updater: ObservableObject {
 
     nonisolated private static func unpackAndVerify(zipFile: URL, expectedVersion: String) throws -> URL {
         let fm = FileManager.default
-        let workDir = fm.temporaryDirectory.appendingPathComponent("DozexUpdate-\(UUID().uuidString)")
+        let workDir = fm.temporaryDirectory.appendingPathComponent("DozerUpdate-\(UUID().uuidString)")
         try fm.createDirectory(at: workDir, withIntermediateDirectories: true)
         try run("/usr/bin/ditto", ["-x", "-k", zipFile.path, workDir.path])
 
-        let app = workDir.appendingPathComponent("Dozex.app")
+        let app = workDir.appendingPathComponent("Dozer.app")
         guard let bundle = Bundle(url: app),
               bundle.bundleIdentifier == Bundle.main.bundleIdentifier,
               bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String == expectedVersion
@@ -151,9 +151,9 @@ final class Updater: ObservableObject {
         return app
     }
 
-    /// Where the app should live: next to the running copy, always named Dozex.app.
+    /// Where the app should live: next to the running copy, always named Dozer.app.
     private static var preferredBundleURL: URL {
-        Bundle.main.bundleURL.deletingLastPathComponent().appendingPathComponent("Dozex.app")
+        Bundle.main.bundleURL.deletingLastPathComponent().appendingPathComponent("Dozer.app")
     }
 
     /// Where the freshly installed copy ends up, so relaunch opens the right one.
@@ -166,14 +166,14 @@ final class Updater: ObservableObject {
         guard fm.isWritableFile(atPath: parent.path) else {
             throw UpdateError.notWritable(parent.path)
         }
-        // Copies from before the rename live at Sleepable.app; install the new
-        // one as Dozex.app unless something else already has that name.
+        // Copies from before the renames live at Sleepable.app or Dozex.app;
+        // install the new one as Dozer.app unless something else has that name.
         var target = preferredBundleURL
         if target != installed, fm.fileExists(atPath: target.path) { target = installed }
 
         // Keep the old copy until the new one is in place, so a failure can
         // be rolled back.
-        let backup = parent.appendingPathComponent(".Dozex-old-\(UUID().uuidString).app")
+        let backup = parent.appendingPathComponent(".Dozer-old-\(UUID().uuidString).app")
         try fm.moveItem(at: installed, to: backup)
         do {
             try fm.moveItem(at: newApp, to: target)
@@ -185,14 +185,15 @@ final class Updater: ObservableObject {
         installedBundleURL = target
     }
 
-    /// Dozex used to be called Sleepable. Updating from 1.1.0 or older leaves
-    /// the app at Sleepable.app, so rename it once and reopen.
+    /// Dozer used to be called Sleepable (up to 1.1.0) and then Dozex (1.2.0
+    /// to 1.5.0). Those versions update by installing the new app under their
+    /// own name, so rename it to Dozer.app once and reopen.
     /// Returns true when it relaunched.
     func renameLegacyBundleIfNeeded() -> Bool {
         let fm = FileManager.default
         let current = Bundle.main.bundleURL
         let target = Self.preferredBundleURL
-        guard current.lastPathComponent == "Sleepable.app",
+        guard ["Sleepable.app", "Dozex.app"].contains(current.lastPathComponent),
               !fm.fileExists(atPath: target.path),
               fm.isWritableFile(atPath: current.deletingLastPathComponent().path),
               (try? fm.moveItem(at: current, to: target)) != nil
@@ -247,8 +248,8 @@ final class Updater: ObservableObject {
             switch self {
             case .badResponse: return "Couldn't reach GitHub. Check your connection and try again."
             case .noAsset: return "The latest release doesn't include \(Updater.assetName)."
-            case .invalidBundle: return "The downloaded update didn't look like Dozex, so it wasn't installed."
-            case .notWritable(let path): return "Dozex can't write to \(path). Download the update from GitHub instead."
+            case .invalidBundle: return "The downloaded update didn't look like Dozer, so it wasn't installed."
+            case .notWritable(let path): return "Dozer can't write to \(path). Download the update from GitHub instead."
             case .toolFailed(let tool): return "Installing the update failed (\(tool))."
             }
         }

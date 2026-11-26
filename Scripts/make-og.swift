@@ -1,5 +1,5 @@
 // Renders the website's link-preview card (1200×630 PNG): the app icon on
-// the left, "Dozex" and a byline on the right, on a dark violet background.
+// the left, "Dozer" and a byline on the right, on a dark violet background.
 // Usage: swift make-og.swift icon-1024.png out.png
 import AppKit
 
@@ -46,7 +46,7 @@ icon.draw(in: NSRect(x: 80, y: (H - iconSize) / 2 - 6, width: iconSize, height: 
 
 // Title and byline.
 let textX: CGFloat = 560
-let title = NSAttributedString(string: "Dozex", attributes: [
+let title = NSAttributedString(string: "Dozer", attributes: [
     .font: NSFont.systemFont(ofSize: 132, weight: .bold),
     .foregroundColor: NSColor.white,
     .kern: -4,
