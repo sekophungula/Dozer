@@ -1,0 +1,23 @@
+<h2>Requirements</h2>
+<ul>
+<li>macOS 14 Sonoma or later, on Apple Silicon or Intel.</li>
+<li>macOS 26 for the optional Control Center toggle.</li>
+</ul>
+<h2>Download and open</h2>
+<ol>
+<li>Download <a href="{{DMG}}"><code>Dozex.dmg</code></a> and open it.</li>
+<li>Drag <code>Dozex</code> onto the <b>Applications</b> folder in the window that opens, then eject the disk image.</li>
+<li>Open Dozex from Applications. It isn't notarised by Apple yet, so the first time macOS shows <b>“Dozex” Not Opened</b>. Click <b>Done</b> (not Move to Bin).</li>
+<li>Open <b>System Settings → Privacy &amp; Security</b>, scroll down to <b>Security</b>, and click <b>Open Anyway</b> next to “Dozex was blocked…”. Confirm with your password or Touch ID, then click <b>Open Anyway</b> again.</li>
+</ol>
+<p>You only do this once. Updates install themselves and open normally.</p>
+<div class="cmd"><span class="label">Or in Terminal</span><code>xattr -dr com.apple.quarantine /Applications/Dozex.app</code><button class="copy" data-copy>Copy</button></div>
+<h2>Set it up</h2>
+<p>The setup page opens on first launch. You can reopen it any time with <b>Setup…</b> in the menu bar panel, or by opening Dozex from Applications again.</p>
+<ol>
+<li><b>Pick the apps to watch.</b> Export and render apps found on your Mac are listed and already switched on. Add others with <b>Add an app…</b>. See <a href="/docs/apps/">Apps</a>.</li>
+<li><b>Choose how Dozex behaves.</b> Downloads, terminal watching, the display and notifications. See <a href="/docs/settings/">Settings</a>.</li>
+<li><b>Connect Claude Code</b> if you use it. See <a href="/docs/claude-code/">Claude Code</a>.</li>
+<li><b>Open at login</b> so it's always running. See <a href="/docs/control-center/">Control Center &amp; login</a>.</li>
+</ol>
+<p>Dozex has no Dock icon. Look for the eye in your menu bar.</p>

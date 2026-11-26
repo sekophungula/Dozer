@@ -49,7 +49,7 @@ for s in 16 32 128 256 512; do
   sips -z $((s*2)) $((s*2)) "$OUT/icon-1024.png" --out "$ICONSET/icon_${s}x${s}@2x.png" >/dev/null
 done
 iconutil -c icns "$ICONSET" -o "$APP/Contents/Resources/AppIcon.icns"
-cp "$OUT/icon-1024.png" "$ROOT/docs/icon.png" 2>/dev/null || true
+cp "$OUT/icon-1024.png" "$ROOT/website/public/assets/icon.png" 2>/dev/null || true
 rm -rf "$ICONSET" "$OUT/icon-1024.png"
 
 echo "▸ Signing ($SIGN_IDENTITY)"

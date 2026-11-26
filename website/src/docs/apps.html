@@ -1,0 +1,32 @@
+<p>Long exports and renders are the main reason a Mac falls asleep at the wrong moment. Dozex watches the apps that do them and keeps your Mac awake while they're working, then lets it sleep when they finish.</p>
+<h2>Apps watched out of the box</h2>
+<table>
+<thead><tr><th>Kind</th><th>Apps</th></tr></thead>
+<tbody>
+<tr><td>Video</td><td>Final Cut Pro, Compressor, Motion, iMovie, Premiere Pro, Media Encoder, After Effects, DaVinci Resolve, HandBrake</td></tr>
+<tr><td>Audio</td><td>Logic Pro, GarageBand, Ableton Live, Pro Tools</td></tr>
+<tr><td>Photo &amp; 3D</td><td>Photoshop, Lightroom, Lightroom Classic, Blender, Cinema 4D</td></tr>
+<tr><td>Games &amp; dev</td><td>Unity, Unreal Editor, Xcode, Android Studio</td></tr>
+</tbody>
+</table>
+<p>The setup page lists the ones installed on your Mac, already switched on.</p>
+<h2>When busy, while open, or off</h2>
+<p>Each app has a setting on the setup page:</p>
+<ul>
+<li><b>When busy</b> (the default): counts while the app is working hard. Opening a project, scrolling the timeline or leaving the app open doesn't count.</li>
+<li><b>While open</b>: keeps your Mac awake the whole time the app is open, busy or not. Useful for a media player, a remote-desktop app or a long-running tool that doesn't use much CPU.</li>
+<li><b>Off</b>: ignore the app.</li>
+</ul>
+<h2>What “busy” means</h2>
+<p>Dozex checks every 3 seconds how much CPU the app is using, including any helper processes it started, such as render workers or encoders. When it uses 10% or more for most of about 15 seconds, it counts as busy. It stays busy until it has gone quiet for about 12 seconds, so short pauses in an export don't let the Mac sleep.</p>
+<p>An app with a project open usually sits well under 10%. An export or render uses far more.</p>
+<h2>Add any app</h2>
+<p>On the setup page, click <b>Add an app…</b> and choose it from Applications. It's added as <b>When busy</b>; change it to <b>While open</b> if that suits it better. Remove an added app with the minus button next to it.</p>
+<h2>Example: exporting from Final Cut Pro</h2>
+<ol>
+<li>Start the export with File → Share as usual.</li>
+<li>After about 15 seconds the eye opens and the menu says <b>Final Cut Pro is working</b>.</li>
+<li>Walk away. The screen may turn off, but the Mac stays awake and the export keeps going.</li>
+<li>When the export ends, Dozex waits for the grace period, then lets the Mac sleep. You'll get an <b>All done</b> notification.</li>
+</ol>
+<p class="callout">If an export uses very little CPU (for example it runs mostly on the graphics chip) and Dozex doesn't pick it up, set the app to <b>While open</b>.</p>

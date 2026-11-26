@@ -1,0 +1,21 @@
+<h2>Requirements</h2>
+<ul>
+<li>Xcode 26 or later (for the Control Center extension SDK). No Xcode project is needed.</li>
+</ul>
+<h2>Build</h2>
+<div class="cmd"><span class="label">Clone</span><code>git clone {{REPO}} &amp;&amp; cd Dozex</code><button class="copy" data-copy>Copy</button></div>
+<div class="cmd"><span class="label">Build</span><code>Scripts/build.sh</code><button class="copy" data-copy>Copy</button></div>
+<div class="cmd"><span class="label">Package</span><code>Scripts/build.sh --package</code><button class="copy" data-copy>Copy</button></div>
+<p><code>Scripts/build.sh</code> writes a universal <code>build/Dozex.app</code>. With <code>--package</code> it also makes <code>Dozex.zip</code> and <code>Dozex.dmg</code>.</p>
+<h2>Options</h2>
+<table>
+<thead><tr><th>Variable</th><th>Use</th></tr></thead>
+<tbody>
+<tr><td><code>VERSION=1.5.0</code></td><td>Stamp a version number.</td></tr>
+<tr><td><code>BUILD_NUMBER=8</code></td><td>Stamp a build number.</td></tr>
+<tr><td><code>SIGN_IDENTITY="Developer ID Application: …"</code></td><td>Sign with your own certificate instead of ad-hoc.</td></tr>
+</tbody>
+</table>
+<h2>The website</h2>
+<p>This site is built from fragments in <code>website/src</code>:</p>
+<pre><code>python3 website/build.py</code></pre>

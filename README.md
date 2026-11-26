@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/icon.png" width="128" alt="Dozex icon"></p>
+<p align="center"><img src="website/public/assets/icon.png" width="128" alt="Dozex icon"></p>
 <h1 align="center">Dozex</h1>
 <p align="center">Keeps your Mac awake while your work runs (exports, renders, downloads, builds, AI agents), then lets it sleep the moment it's done.</p>
 <p align="center">

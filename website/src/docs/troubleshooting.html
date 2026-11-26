@@ -1,0 +1,29 @@
+<h2>“Dozex” Not Opened</h2>
+<p>Dozex isn't notarised by Apple yet, so macOS blocks the first launch. It isn't malware, and you only need to allow it once:</p>
+<ol>
+<li>Click <b>Done</b> in the warning. Don't click Move to Bin.</li>
+<li>Open <b>System Settings</b> and go to <b>Privacy &amp; Security</b>.</li>
+<li>Scroll down to the <b>Security</b> section. You'll see “Dozex was blocked to protect your Mac.”</li>
+<li>Click <b>Open Anyway</b>, confirm with your password or Touch ID, then click <b>Open Anyway</b> in the next dialog.</li>
+</ol>
+<p>The Open Anyway button only shows for about an hour after the warning. If it's gone, open Dozex again to bring it back. Or in Terminal:</p>
+<pre><code>xattr -dr com.apple.quarantine /Applications/Dozex.app</code></pre>
+<h2>My Mac still slept during an export</h2>
+<ul>
+<li>Check <b>Watch apps</b> is on, and the app is set to <b>When busy</b> or <b>While open</b> on the setup page.</li>
+<li>Did the lid close? A MacBook always sleeps with its lid closed unless an external display is connected.</li>
+<li>If the export barely uses the CPU, set the app to <b>While open</b>.</li>
+<li>Not listed? Add it with <b>Add an app…</b>.</li>
+</ul>
+<h2>It says something is working when nothing is</h2>
+<p>Open the menu bar panel: the line under the title says what's being counted. A forgotten terminal command, a cloud folder syncing, or an app set to <b>While open</b> are the usual reasons. Turn off the matching switch, or stop the job.</p>
+<h2>My Mac never sleeps</h2>
+<ul>
+<li>Make sure <b>Keep awake indefinitely</b> is off.</li>
+<li>Check for apps set to <b>While open</b>.</li>
+<li>Other apps can also keep a Mac awake. Run <code>pmset -g assertions</code> in Terminal to see who's holding it. Dozex's entries start with “Dozex:”.</li>
+</ul>
+<h2>Claude Code isn't picked up</h2>
+<p>Check <b>Connect Claude Code</b> shows <b>Connected</b> on the setup page. Sessions that were already open pick it up on their next prompt.</p>
+<h2>Still stuck?</h2>
+<p><a href="{{REPO}}/issues">Open an issue on GitHub</a> with what you tried and what you saw.</p>
